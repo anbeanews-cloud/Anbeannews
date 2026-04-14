@@ -106,13 +106,14 @@
   <div class="masthead"><a href="#" class="logo">AN<em>BEAN</em>NEWS</a><div class="tagline">Türkiye'nin Güncel Haber Kaynağı</div></div>
   <nav>
     <a class="active" onclick="filterKategori('tumu',this)">Tümü</a>
-    <a onclick="filterKategori('Gundem',this)">Gündem</a>
+    <a onclick="filterKategori('Gündem',this)">Gündem</a>
     <a onclick="filterKategori('Ekonomi',this)">Ekonomi</a>
-    <a onclick="filterKategori('Dunya',this)">Dünya</a>
+    <a onclick="filterKategori('Dünya',this)">Dünya</a>
     <a onclick="filterKategori('Spor',this)">Spor</a>
     <a onclick="filterKategori('Teknoloji',this)">Teknoloji</a>
-    <a onclick="filterKategori('Kultur',this)">Kültür</a>
-    <a onclick="filterKategori('Saglik',this)">Sağlık</a>
+    <a onclick="filterKategori('Sağlık',this)">Sağlık</a>
+    <a onclick="filterKategori('Magazin',this)">Magazin</a>
+    <a onclick="filterKategori('Astroloji',this)">Astroloji</a>
   </nav>
 </header>
 <div class="search-bar">
@@ -151,7 +152,7 @@
 <footer><div class="footer-inner">
   <div class="footer-grid">
     <div class="f-brand"><div class="logo" style="font-size:36px;color:var(--paper)">AN<em style="color:var(--accent)">BEAN</em>NEWS</div><p>Türkiye'nin güvenilir dijital haber platformu.</p></div>
-    <div class="f-col"><h4>Kategoriler</h4><a href="#">Gündem</a><a href="#">Ekonomi</a><a href="#">Dünya</a><a href="#">Spor</a></div>
+    <div class="f-col"><h4>Kategoriler</h4><a href="#">Gündem</a><a href="#">Ekonomi</a><a href="#">Dünya</a><a href="#">Spor</a><a href="#">Magazin</a><a href="#">Astroloji</a></div>
     <div class="f-col"><h4>Takip Edin</h4><a href="https://twitter.com/anbeannews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeannews','_blank');return false;">Twitter/X</a><a href="https://instagram.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://instagram.com/anbeanews','_blank');return false;">Instagram</a></div>
   </div>
   <div class="footer-bottom"><span>2026 Anbeannews.</span><span>Tüm hakları saklıdır.</span></div>
@@ -172,7 +173,7 @@
     const hero=haberler[0];const sidebar=haberler.slice(1,4);
     if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henüz haber yok</div>';return;}
     const sidebarHTML=sidebar.map(function(h){return'<div class="sidebar-item fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'side'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="s-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="s-time">'+zamanFormat(h.created_at)+'</div></div>';}).join('');
-    document.getElementById('hero-section').innerHTML='<div class="hero-card fadeup" onclick="haberAc('+hero.id+')"><div class="hero-cat">'+(hero.kategori||'Gundem')+'</div><h1>'+hero.baslik+'</h1><p>'+(hero.ozet||'').substring(0,120)+'</p><div class="hero-meta">'+zamanFormat(hero.created_at)+'</div></div><div class="sidebar-list">'+sidebarHTML+'</div>';
+    document.getElementById('hero-section').innerHTML='<div class="hero-card fadeup" onclick="haberAc('+hero.id+')"><div class="hero-cat">'+(hero.kategori||'Gündem')+'</div><h1>'+hero.baslik+'</h1><p>'+(hero.ozet||'').substring(0,120)+'</p><div class="hero-meta">'+zamanFormat(hero.created_at)+'</div></div><div class="sidebar-list">'+sidebarHTML+'</div>';
     if(hero.resim_url){document.querySelector('.hero-card').style.backgroundImage='linear-gradient(to top,rgba(15,14,12,.88) 45%,transparent 100%),url(\''+hero.resim_url+'\')';}
   }
   function kartlarRender(haberler){
