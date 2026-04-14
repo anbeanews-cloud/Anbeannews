@@ -237,7 +237,8 @@
     document.getElementById('arama-bilgi').style.display='block';
     document.getElementById('arama-bilgi').innerHTML='<span>"'+kelime+'"</span> için aranıyor... <span class="clear-search" onclick="aramaTemizle()">Temizle</span>';
     try{
-      const url=SUPABASE_URL+'/rest/v1/haberler?select=*&or=(baslik.ilike.*'+encodeURIComponent(kelime)+'*,ozet.ilike.*'+encodeURIComponent(kelime)+'*)&order=yayin_tarihi.desc&limit=50';
+      const url=SUPABASE_URL+'/rest/v1/haberler?select=*&or=(baslik.ilike.*'+encodeURIComponent(kelime)+'*,ozet.ilike.*'+encodeURIComponent(kelime)+'*)&order=created_at.desc&limit=50
+';
       const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
       if(!res.ok)throw new Error('HTTP '+res.status);
       const sonuclar=await res.json();
