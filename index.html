@@ -187,8 +187,21 @@
 
   function kartlarRender(haberler){
     const liste=haberler.slice(4);
-    if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Henüz haber yok</h3><p>Haberler otomatik eklenecek</p></div>';return;}
-    document.getElementById('haberler-grid').innerHTML=liste.map(function(h){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div>'+(h.kaynak?'<div class="kaynak-badge">'+h.kaynak+'</div>':'')+'</div>';}).join('');
+    sayfaOffset=0;
+    if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Henüz haber yok</h3><p>Haberler otomatik eklenecek</p></div>';document.getElementById('daha-fazla-btn').style.display='none';return;}
+    const goster=liste.slice(0,SAYFA_BOYUTU);
+    document.getElementById('haberler-grid').innerHTML=goster.map(function(h){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div>'+(h.kaynak?'<div class="kaynak-badge">'+h.kaynak+'</div>':'')+'</div>';}).join('');
+    sayfaOffset=SAYFA_BOYUTU;
+    document.getElementById('daha-fazla-btn').style.display=liste.length>SAYFA_BOYUTU?'inline-block':'none';
+  }
+
+  function dahaFazlaYukle(){
+    const liste=tumHaberler.slice(4);
+    const yeni=liste.slice(sayfaOffset,sayfaOffset+SAYFA_BOYUTU);
+    if(yeni.length===0){document.getElementById('daha-fazla-btn').style.display='none';return;}
+    document.getElementById('haberler-grid').innerHTML+=yeni.map(function(h){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div>'+(h.kaynak?'<div class="kaynak-badge">'+h.kaynak+'</div>':'')+'</div>';}).join('');
+    sayfaOffset+=SAYFA_BOYUTU;
+    if(sayfaOffset>=liste.length)document.getElementById('daha-fazla-btn').style.display='none';
   }
 
   const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
