@@ -22,6 +22,19 @@
     nav{display:flex;justify-content:center;overflow-x:auto;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
     nav a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--ink);padding:10px 18px;border-right:1px solid var(--rule);white-space:nowrap;transition:background .15s,color .15s;cursor:pointer}
     nav a:hover,nav a.active{background:var(--ink);color:var(--paper)}
+
+    /* ARAMA KUTUSU */
+    .search-bar{background:var(--paper2);border-bottom:2px solid var(--ink);padding:12px 24px;display:flex;align-items:center;gap:12px}
+    .search-bar form{display:flex;flex:1;max-width:600px;margin:0 auto;position:relative}
+    .search-bar input{width:100%;padding:10px 44px 10px 16px;font-family:var(--mono);font-size:13px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);outline:none;transition:border-color .2s}
+    .search-bar input:focus{border-color:var(--accent)}
+    .search-bar input::placeholder{color:var(--muted)}
+    .search-bar button{position:absolute;right:0;top:0;height:100%;padding:0 14px;background:var(--ink);color:var(--paper);border:none;cursor:pointer;font-family:var(--mono);font-size:13px;transition:background .15s}
+    .search-bar button:hover{background:var(--accent)}
+    .search-result-info{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px}
+    .search-result-info span{color:var(--accent);font-weight:500}
+    .clear-search{font-family:var(--mono);font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;margin-left:8px}
+
     .breaking{background:var(--accent);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;font-size:14px}
     .breaking-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:#fff;color:var(--accent);padding:3px 8px;flex-shrink:0}
     main{max-width:1280px;margin:0 auto;padding:32px 24px}
@@ -78,7 +91,7 @@
     .f-col a{display:block;font-size:13px;color:rgba(245,240,232,.65);text-decoration:none;margin-bottom:8px}
     .footer-bottom{font-family:var(--mono);font-size:10px;color:rgba(245,240,232,.3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
     @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-card{border-right:none;border-bottom:1px solid var(--rule);min-height:320px}.card-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr;gap:24px}}
-    @media(max-width:560px){main{padding:20px 16px}}
+    @media(max-width:560px){main{padding:20px 16px}.search-bar{padding:10px 16px}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
     .fadeup{animation:fadeUp .4s ease both}
   </style>
@@ -89,18 +102,28 @@
   <div class="header-top"><span id="tarih">Yukleniyor...</span><span>Istanbul · Ankara · Izmir</span><span>anbeannews.com</span></div>
   <div class="masthead"><a href="#" class="logo">AN<em>BEAN</em>NEWS</a><div class="tagline">Turkiye'nin Guncel Haber Kaynagi</div></div>
   <nav>
-    <a class="active" onclick="filterKategori('tumu')">Tumu</a>
-    <a onclick="filterKategori('Gundem')">Gundem</a>
-    <a onclick="filterKategori('Ekonomi')">Ekonomi</a>
-    <a onclick="filterKategori('Dunya')">Dunya</a>
-    <a onclick="filterKategori('Spor')">Spor</a>
-    <a onclick="filterKategori('Teknoloji')">Teknoloji</a>
-    <a onclick="filterKategori('Kultur')">Kultur</a>
-    <a onclick="filterKategori('Saglik')">Saglik</a>
+    <a class="active" onclick="filterKategori('tumu',this)">Tumu</a>
+    <a onclick="filterKategori('Gundem',this)">Gundem</a>
+    <a onclick="filterKategori('Ekonomi',this)">Ekonomi</a>
+    <a onclick="filterKategori('Dunya',this)">Dunya</a>
+    <a onclick="filterKategori('Spor',this)">Spor</a>
+    <a onclick="filterKategori('Teknoloji',this)">Teknoloji</a>
+    <a onclick="filterKategori('Kultur',this)">Kultur</a>
+    <a onclick="filterKategori('Saglik',this)">Saglik</a>
   </nav>
 </header>
+
+<!-- ARAMA KUTUSU -->
+<div class="search-bar">
+  <form onsubmit="aramaYap(event)">
+    <input type="text" id="arama-input" placeholder="Haber ara... (örn: ekonomi, Trump, deprem)" autocomplete="off"/>
+    <button type="submit">🔍 ARA</button>
+  </form>
+</div>
+
 <div class="breaking"><span class="breaking-label">SON DAKIKA</span><span id="breaking-text">Haberler yukleniyor...</span></div>
 <main>
+  <div id="arama-bilgi" style="display:none" class="search-result-info"></div>
   <div class="hero-grid" id="hero-section"><div class="loading">Haberler yukleniyor</div></div>
   <div class="sec-head"><div class="r"></div><h2 id="sec-title">Son Haberler</h2><div class="r"></div></div>
   <div class="card-grid" id="haberler-grid"><div class="loading" style="grid-column:1/-1">Yukleniyor</div></div>
@@ -134,18 +157,123 @@
   document.getElementById('tarih').textContent=gunler[now.getDay()]+', '+now.getDate()+' '+aylar[now.getMonth()]+' '+now.getFullYear();
   let tumHaberler=[];
   let aktifKategori='tumu';
+  let aramaAktif=false;
+
   function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az once';if(fark<60)return fark+' dakika once';if(fark<1440)return Math.floor(fark/60)+' saat once';return Math.floor(fark/1440)+' gun once';}
   function resimUrl(h,seed){return h.resim_url||'https://picsum.photos/seed/'+seed+'/600/400';}
-  function heroRender(haberler){const hero=haberler[0];const sidebar=haberler.slice(1,4);if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henuz haber yok</div>';return;}const sidebarHTML=sidebar.map(function(h,i){return'<div class="sidebar-item fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'side'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="s-cat">'+( h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="s-time">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');document.getElementById('hero-section').innerHTML='<div class="hero-card fadeup" onclick="haberAc('+hero.id+')"><div class="hero-cat">'+( hero.kategori||'Gundem')+'</div><h1>'+hero.baslik+'</h1><p>'+(hero.ozet||'').substring(0,120)+'</p><div class="hero-meta">'+zamanFormat(hero.yayin_tarihi)+'</div></div><div class="sidebar-list">'+sidebarHTML+'</div>';if(hero.resim_url){document.querySelector('.hero-card').style.backgroundImage='linear-gradient(to top,rgba(15,14,12,.88) 45%,transparent 100%),url(\''+hero.resim_url+'\')';};}
-  function kartlarRender(haberler){const liste=haberler.slice(4);if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Henuz haber yok</h3><p>Haberler otomatik eklenecek</p></div>';return;}document.getElementById('haberler-grid').innerHTML=liste.map(function(h,i){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+( h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');}
+
+  function heroRender(haberler){
+    const hero=haberler[0];
+    const sidebar=haberler.slice(1,4);
+    if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henuz haber yok</div>';return;}
+    const sidebarHTML=sidebar.map(function(h){return'<div class="sidebar-item fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'side'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="s-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="s-time">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');
+    document.getElementById('hero-section').innerHTML='<div class="hero-card fadeup" onclick="haberAc('+hero.id+')"><div class="hero-cat">'+(hero.kategori||'Gundem')+'</div><h1>'+hero.baslik+'</h1><p>'+(hero.ozet||'').substring(0,120)+'</p><div class="hero-meta">'+zamanFormat(hero.yayin_tarihi)+'</div></div><div class="sidebar-list">'+sidebarHTML+'</div>';
+    if(hero.resim_url){document.querySelector('.hero-card').style.backgroundImage='linear-gradient(to top,rgba(15,14,12,.88) 45%,transparent 100%),url(\''+hero.resim_url+'\')';}
+  }
+
+  function kartlarRender(haberler){
+    const liste=haberler.slice(4);
+    if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Henuz haber yok</h3><p>Haberler otomatik eklenecek</p></div>';return;}
+    document.getElementById('haberler-grid').innerHTML=liste.map(function(h){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');
+  }
+
   const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
   const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
-  async function haberleriYukle(kategori){kategori=kategori||'tumu';try{let url=SUPABASE_URL+'/rest/v1/haberler?select=*&order=yayin_tarihi.desc&limit=20';if(kategori!=='tumu')url+='&kategori=eq.'+encodeURIComponent(kategori);const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});if(!res.ok)throw new Error('HTTP '+res.status);tumHaberler=await res.json();if(tumHaberler.length>0){document.getElementById('breaking-text').textContent=tumHaberler[0].baslik;}else{document.getElementById('breaking-text').textContent='Yeni haberler icin takipte kalin';}heroRender(tumHaberler);kartlarRender(tumHaberler);}catch(err){document.getElementById('hero-section').innerHTML='<div class="loading">Baglanti hatasi: '+err.message+'</div>';}}
-  function filterKategori(kat){aktifKategori=kat;document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('active');});event.target.classList.add('active');document.getElementById('sec-title').textContent=kat==='tumu'?'Son Haberler':kat+' Haberleri';haberleriYukle(kat);}
-  function haberAc(id){const h=tumHaberler.find(function(x){return x.id===id;});if(!h)return;document.getElementById('m-cat').textContent=h.kategori||'Genel';document.getElementById('m-baslik').textContent=h.baslik;document.getElementById('m-meta').textContent=zamanFormat(h.yayin_tarihi);const resim=document.getElementById('m-resim');resim.src=resimUrl(h,'modal'+h.id);resim.style.display='block';document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'Icerik bulunamadi.';document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden';}
-  function modalKapat(e){if(e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}}
+
+  async function haberleriYukle(kategori){
+    kategori=kategori||'tumu';
+    try{
+      let url=SUPABASE_URL+'/rest/v1/haberler?select=*&order=yayin_tarihi.desc&limit=20';
+      if(kategori!=='tumu')url+='&kategori=eq.'+encodeURIComponent(kategori);
+      const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      tumHaberler=await res.json();
+      if(tumHaberler.length>0){document.getElementById('breaking-text').textContent=tumHaberler[0].baslik;}
+      else{document.getElementById('breaking-text').textContent='Yeni haberler icin takipte kalin';}
+      heroRender(tumHaberler);
+      kartlarRender(tumHaberler);
+    }catch(err){
+      document.getElementById('hero-section').innerHTML='<div class="loading">Baglanti hatasi: '+err.message+'</div>';
+    }
+  }
+
+  // ARAMA FONKSİYONU
+  async function aramaYap(e){
+    if(e) e.preventDefault();
+    const kelime=document.getElementById('arama-input').value.trim();
+    if(!kelime){
+      aramaTemizle();
+      return;
+    }
+    aramaAktif=true;
+    document.getElementById('sec-title').textContent='Arama Sonuclari';
+    document.getElementById('arama-bilgi').style.display='block';
+    document.getElementById('arama-bilgi').innerHTML='<span>"'+kelime+'"</span> icin aranıyor... <span class="clear-search" onclick="aramaTemizle()">Temizle</span>';
+    try{
+      const url=SUPABASE_URL+'/rest/v1/haberler?select=*&or=(baslik.ilike.*'+encodeURIComponent(kelime)+'*,ozet.ilike.*'+encodeURIComponent(kelime)+'*)&order=yayin_tarihi.desc&limit=50';
+      const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const sonuclar=await res.json();
+      tumHaberler=sonuclar;
+      document.getElementById('arama-bilgi').innerHTML='<span>"'+kelime+'"</span> icin <span>'+sonuclar.length+' haber</span> bulundu <span class="clear-search" onclick="aramaTemizle()">Temizle</span>';
+      if(sonuclar.length===0){
+        document.getElementById('hero-section').innerHTML='<div class="loading" style="grid-column:1/-1">Sonuc bulunamadi</div>';
+        document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Haber bulunamadi</h3><p>"'+kelime+'" ile esleen haber yok</p></div>';
+      } else {
+        heroRender(sonuclar);
+        kartlarRender(sonuclar);
+      }
+    }catch(err){
+      document.getElementById('arama-bilgi').innerHTML='Hata: '+err.message;
+    }
+  }
+
+  function aramaTemizle(){
+    aramaAktif=false;
+    document.getElementById('arama-input').value='';
+    document.getElementById('arama-bilgi').style.display='none';
+    document.getElementById('sec-title').textContent='Son Haberler';
+    haberleriYukle(aktifKategori);
+  }
+
+  function filterKategori(kat,el){
+    aktifKategori=kat;
+    aramaTemizle();
+    document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('active');});
+    if(el) el.classList.add('active');
+    document.getElementById('sec-title').textContent=kat==='tumu'?'Son Haberler':kat+' Haberleri';
+    haberleriYukle(kat);
+  }
+
+  function haberAc(id){
+    const h=tumHaberler.find(function(x){return x.id===id;});
+    if(!h)return;
+    document.getElementById('m-cat').textContent=h.kategori||'Genel';
+    document.getElementById('m-baslik').textContent=h.baslik;
+    document.getElementById('m-meta').textContent=zamanFormat(h.yayin_tarihi);
+    const resim=document.getElementById('m-resim');
+    resim.src=resimUrl(h,'modal'+h.id);
+    resim.style.display='block';
+    document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'Icerik bulunamadi.';
+    document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+
+  function modalKapat(e){
+    if(e.target===document.getElementById('modal')){
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow='';
+    }
+  }
+
+  // Enter tuşu ile de arama yapılsın
+  document.getElementById('arama-input').addEventListener('keydown',function(e){
+    if(e.key==='Escape') aramaTemizle();
+  });
+
   haberleriYukle();
-  setInterval(function(){haberleriYukle(aktifKategori);},300000);
+  setInterval(function(){if(!aramaAktif)haberleriYukle(aktifKategori);},300000);
 </script>
 </body>
 </html>
