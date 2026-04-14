@@ -77,6 +77,11 @@
     .modal-body{font-size:17px;line-height:1.8;font-weight:300}
     .modal-source{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--muted)}
     .modal-source a{color:var(--accent)}
+    .share-btns{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule)}
+    .share-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:opacity .15s;font-weight:500}
+    .share-btn:hover{opacity:.85}
+    .share-btn.wp{background:#25D366;color:#fff}
+    .share-btn.tw{background:#000;color:#fff}
     .weather{background:var(--ink);color:var(--paper);padding:14px 24px;display:flex;gap:28px;align-items:center;overflow-x:auto;margin-bottom:36px;border-left:4px solid var(--accent2)}
     .w-label{font-family:var(--mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent2);white-space:nowrap}
     .w-city{text-align:center;white-space:nowrap}
@@ -140,7 +145,12 @@
   <div class="modal"><button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">X KAPAT</button>
   <div class="modal-cat" id="m-cat"></div><h1 id="m-baslik"></h1><div class="modal-meta" id="m-meta"></div>
   <img id="m-resim" src="" alt="" onerror="this.style.display='none'"/>
-  <div class="modal-body" id="m-icerik"></div><div class="modal-source" id="m-kaynak"></div></div>
+  <div class="modal-body" id="m-icerik"></div><div class="modal-source" id="m-kaynak"></div>
+  <div class="share-btns">
+    <a id="wp-btn" class="share-btn wp" target="_blank">📱 WhatsApp</a>
+    <a id="tw-btn" class="share-btn tw" target="_blank">🐦 Twitter/X</a>
+  </div>
+  </div>
 </div>
 <footer><div class="footer-inner">
   <div class="footer-grid">
@@ -256,6 +266,11 @@
     resim.style.display='block';
     document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'Icerik bulunamadi.';
     document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';
+    const haberLink=h.kaynak_url||window.location.href;
+    const haberBaslik=encodeURIComponent(h.baslik);
+    const haberUrl=encodeURIComponent(haberLink);
+    document.getElementById('wp-btn').href='https://wa.me/?text='+haberBaslik+'%20'+haberUrl;
+    document.getElementById('tw-btn').href='https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeannews';
     document.getElementById('modal').classList.add('open');
     document.body.style.overflow='hidden';
   }
