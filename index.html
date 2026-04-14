@@ -133,6 +133,7 @@
   <div class="hero-grid" id="hero-section"><div class="loading">Haberler yukleniyor</div></div>
   <div class="sec-head"><div class="r"></div><h2 id="sec-title">Son Haberler</h2><div class="r"></div></div>
   <div class="card-grid" id="haberler-grid"><div class="loading" style="grid-column:1/-1">Yukleniyor</div></div>
+  <div style="text-align:center;margin-bottom:36px"><button id="daha-fazla-btn" onclick="dahaFazlaYukle()" style="display:none;font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;padding:12px 32px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">+ Daha Fazla Haber</button></div>
   <div class="weather" id="hava-durumu">
     <span class="w-label">Hava Durumu</span>
     <div class="w-city"><div class="w-name">İSTANBUL</div><div class="w-temp" id="w-ist">--°</div><div class="w-cond" id="wc-ist">Yükleniyor</div></div>
@@ -169,6 +170,8 @@
   let tumHaberler=[];
   let aktifKategori='tumu';
   let aramaAktif=false;
+  let sayfaOffset=0;
+  const SAYFA_BOYUTU=6;
 
   function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az önce';if(fark<60)return fark+' dakika önce';if(fark<1440)return Math.floor(fark/60)+' saat önce';return Math.floor(fark/1440)+' gün önce';}
   function resimUrl(h,seed){return h.resim_url||'https://picsum.photos/seed/'+seed+'/600/400';}
@@ -290,6 +293,34 @@
 
   haberleriYukle();
   setInterval(function(){if(!aramaAktif)haberleriYukle(aktifKategori);},300000);
+
+  // HAVA DURUMU
+  const WEATHER_KEY='dccc682baa68c1d2769dc3653c69ea1e';
+  const sehirler=[
+    {id:'w-ist',cid:'wc-ist',sehir:'Istanbul,TR'},
+    {id:'w-ank',cid:'wc-ank',sehir:'Ankara,TR'},
+    {id:'w-izm',cid:'wc-izm',sehir:'Izmir,TR'},
+    {id:'w-ant',cid:'wc-ant',sehir:'Antalya,TR'},
+    {id:'w-bur',cid:'wc-bur',sehir:'Bursa,TR'}
+  ];
+  const havaDurumu={
+    'Clear':'Güneşli','Clouds':'Bulutlu','Rain':'Yağmurlu',
+    'Drizzle':'Çiseleyen','Thunderstorm':'Fırtınalı','Snow':'Karlı',
+    'Mist':'Sisli','Fog':'Sisli','Haze':'Puslu'
+  };
+  async function havaCek(){
+    for(const s of sehirler){
+      try{
+        const r=await fetch('https://api.openweathermap.org/data/2.5/weather?q='+s.sehir+'&appid='+WEATHER_KEY+'&units=metric&lang=tr');
+        if(!r.ok)continue;
+        const d=await r.json();
+        document.getElementById(s.id).textContent=Math.round(d.main.temp)+'°';
+        document.getElementById(s.cid).textContent=havaDurumu[d.weather[0].main]||d.weather[0].description;
+      }catch(e){}
+    }
+  }
+  havaCek();
+  setInterval(havaCek, 1800000);
 </script>
 </body>
 </html>
