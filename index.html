@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ANBEANNEWS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#0f0e0c;--paper:#f5f0e8;--paper2:#ede7d9;--accent:#c0392b;--accent2:#e67e22;--muted:#7a7062;--rule:#c8bfaf;--serif:'Playfair Display',Georgia,serif;--body:'Source Serif 4',Georgia,serif;--mono:'JetBrains Mono',monospace}
+    body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+    .ticker-bar{background:var(--accent);color:#fff;padding:7px 0;overflow:hidden;white-space:nowrap;font-family:var(--mono);font-size:12px}
+    .ticker-inner{display:inline-block;animation:ticker 40s linear infinite}
+    .ticker-inner span{margin:0 40px}
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    header{background:var(--paper);border-bottom:3px double var(--rule);padding:0 24px}
+    .header-top{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .masthead{text-align:center;padding:20px 0 14px}
+    .logo{font-family:var(--serif);font-size:clamp(38px,7vw,80px);font-weight:900;letter-spacing:-2px;line-height:1;color:var(--ink);text-decoration:none}
+    .logo em{color:var(--accent);font-style:italic}
+    .tagline{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+    nav{display:flex;justify-content:center;overflow-x:auto;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
+    nav a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--ink);padding:10px 18px;border-right:1px solid var(--rule);white-space:nowrap;transition:background .15s,color .15s;cursor:pointer}
+    nav a:hover,nav a.active{background:var(--ink);color:var(--paper)}
+    .breaking{background:var(--accent);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;font-size:14px}
+    .breaking-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:#fff;color:var(--accent);padding:3px 8px;flex-shrink:0}
+    main{max-width:1280px;margin:0 auto;padding:32px 24px}
+    .loading{text-align:center;padding:60px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+    .hero-grid{display:grid;grid-template-columns:1fr 360px;border:1px solid var(--rule);margin-bottom:32px}
+    .hero-card{border-right:1px solid var(--rule);min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;background:linear-gradient(to top,rgba(15,14,12,.88) 45%,transparent 100%),url('https://picsum.photos/seed/news1/900/600') center/cover no-repeat;cursor:pointer}
+    .hero-cat{font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
+    .hero-card h1{font-family:var(--serif);font-size:clamp(20px,2.8vw,34px);font-weight:700;line-height:1.15;color:#fff;margin-bottom:10px}
+    .hero-card p{color:rgba(255,255,255,.78);font-size:14px;font-weight:300;margin-bottom:14px}
+    .hero-meta{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.5)}
+    .sidebar-list{display:flex;flex-direction:column}
+    .sidebar-item{padding:18px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .15s}
+    .sidebar-item:hover{background:var(--paper2)}
+    .sidebar-item img{width:100%;height:110px;object-fit:cover;margin-bottom:10px}
+    .s-cat{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+    .sidebar-item h3{font-family:var(--serif);font-size:16px;font-weight:700;line-height:1.25;margin-bottom:5px}
+    .sidebar-item p{font-size:12px;color:var(--muted);font-weight:300}
+    .s-time{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px}
+    .sec-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+    .sec-head h2{font-family:var(--serif);font-size:22px;font-weight:700;font-style:italic;white-space:nowrap}
+    .sec-head .r{flex:1;height:2px;background:var(--ink)}
+    .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:36px}
+    .news-card{background:var(--paper);padding:20px;cursor:pointer;transition:background .15s}
+    .news-card:hover{background:var(--paper2)}
+    .news-card img{width:100%;height:170px;object-fit:cover;margin-bottom:12px}
+    .n-cat{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+    .news-card h3{font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.2;margin-bottom:7px}
+    .news-card p{font-size:13px;color:var(--muted);font-weight:300;line-height:1.5}
+    .n-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:10px}
+    .empty{grid-column:1/-1;text-align:center;padding:60px 20px}
+    .empty h3{font-family:var(--serif);font-size:24px;font-style:italic;margin-bottom:10px}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,14,12,.85);z-index:1000;overflow-y:auto;padding:40px 20px}
+    .modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+    .modal{background:var(--paper);max-width:720px;width:100%;padding:40px;position:relative}
+    .modal-close{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:12px;cursor:pointer;background:var(--ink);color:var(--paper);border:none;padding:6px 12px}
+    .modal-cat{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+    .modal h1{font-family:var(--serif);font-size:clamp(22px,4vw,36px);font-weight:700;line-height:1.15;margin-bottom:14px}
+    .modal-meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+    .modal img{width:100%;height:300px;object-fit:cover;margin-bottom:24px}
+    .modal-body{font-size:17px;line-height:1.8;font-weight:300}
+    .modal-source{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .modal-source a{color:var(--accent)}
+    .weather{background:var(--ink);color:var(--paper);padding:14px 24px;display:flex;gap:28px;align-items:center;overflow-x:auto;margin-bottom:36px;border-left:4px solid var(--accent2)}
+    .w-label{font-family:var(--mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent2);white-space:nowrap}
+    .w-city{text-align:center;white-space:nowrap}
+    .w-name{font-family:var(--mono);font-size:9px;color:rgba(245,240,232,.5)}
+    .w-temp{font-family:var(--serif);font-size:22px;font-weight:700}
+    .w-cond{font-size:11px;color:rgba(245,240,232,.6)}
+    footer{background:var(--ink);color:var(--paper);padding:40px 24px 20px}
+    .footer-inner{max-width:1280px;margin:0 auto}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;padding-bottom:28px;border-bottom:1px solid rgba(245,240,232,.15);margin-bottom:18px}
+    .f-brand p{font-size:13px;color:rgba(245,240,232,.5);margin-top:10px;font-weight:300;line-height:1.6}
+    .f-col h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);margin-bottom:14px}
+    .f-col a{display:block;font-size:13px;color:rgba(245,240,232,.65);text-decoration:none;margin-bottom:8px}
+    .footer-bottom{font-family:var(--mono);font-size:10px;color:rgba(245,240,232,.3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-card{border-right:none;border-bottom:1px solid var(--rule);min-height:320px}.card-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr;gap:24px}}
+    @media(max-width:560px){main{padding:20px 16px}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fadeup{animation:fadeUp .4s ease both}
+  </style>
+</head>
+<body>
+<div class="ticker-bar"><div class="ticker-inner"><span>📌 Anbeannews'e hos geldiniz</span><span>⚡ Haberler otomatik guncellenmektedir</span><span>🌍 Turkiye gundemine aninda ulasin</span><span>📌 Anbeannews'e hos geldiniz</span><span>⚡ Haberler otomatik guncellenmektedir</span><span>🌍 Turkiye gundemine aninda ulasin</span></div></div>
+<header>
+  <div class="header-top"><span id="tarih">Yukleniyor...</span><span>Istanbul · Ankara · Izmir</span><span>anbeannews.com</span></div>
+  <div class="masthead"><a href="#" class="logo">AN<em>BEAN</em>NEWS</a><div class="tagline">Turkiye'nin Guncel Haber Kaynagi</div></div>
+  <nav>
+    <a class="active" onclick="filterKategori('tumu')">Tumu</a>
+    <a onclick="filterKategori('Gundem')">Gundem</a>
+    <a onclick="filterKategori('Ekonomi')">Ekonomi</a>
+    <a onclick="filterKategori('Dunya')">Dunya</a>
+    <a onclick="filterKategori('Spor')">Spor</a>
+    <a onclick="filterKategori('Teknoloji')">Teknoloji</a>
+    <a onclick="filterKategori('Kultur')">Kultur</a>
+    <a onclick="filterKategori('Saglik')">Saglik</a>
+  </nav>
+</header>
+<div class="breaking"><span class="breaking-label">SON DAKIKA</span><span id="breaking-text">Haberler yukleniyor...</span></div>
+<main>
+  <div class="hero-grid" id="hero-section"><div class="loading">Haberler yukleniyor</div></div>
+  <div class="sec-head"><div class="r"></div><h2 id="sec-title">Son Haberler</h2><div class="r"></div></div>
+  <div class="card-grid" id="haberler-grid"><div class="loading" style="grid-column:1/-1">Yukleniyor</div></div>
+  <div class="weather">
+    <span class="w-label">Hava Durumu</span>
+    <div class="w-city"><div class="w-name">ISTANBUL</div><div class="w-temp">19°</div><div class="w-cond">Parcali Bulutlu</div></div>
+    <div class="w-city"><div class="w-name">ANKARA</div><div class="w-temp">14°</div><div class="w-cond">Sisli</div></div>
+    <div class="w-city"><div class="w-name">IZMIR</div><div class="w-temp">23°</div><div class="w-cond">Gunesli</div></div>
+    <div class="w-city"><div class="w-name">ANTALYA</div><div class="w-temp">26°</div><div class="w-cond">Acik</div></div>
+    <div class="w-city"><div class="w-name">BURSA</div><div class="w-temp">17°</div><div class="w-cond">Yagmurlu</div></div>
+  </div>
+</main>
+<div class="modal-overlay" id="modal" onclick="modalKapat(event)">
+  <div class="modal"><button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">X KAPAT</button>
+  <div class="modal-cat" id="m-cat"></div><h1 id="m-baslik"></h1><div class="modal-meta" id="m-meta"></div>
+  <img id="m-resim" src="" alt="" onerror="this.style.display='none'"/>
+  <div class="modal-body" id="m-icerik"></div><div class="modal-source" id="m-kaynak"></div></div>
+</div>
+<footer><div class="footer-inner">
+  <div class="footer-grid">
+    <div class="f-brand"><div class="logo" style="font-size:36px;color:var(--paper)">AN<em style="color:var(--accent)">BEAN</em>NEWS</div><p>Turkiye'nin guvenilir dijital haber platformu.</p></div>
+    <div class="f-col"><h4>Kategoriler</h4><a href="#">Gundem</a><a href="#">Ekonomi</a><a href="#">Dunya</a><a href="#">Spor</a></div>
+    <div class="f-col"><h4>Takip Edin</h4><a href="#">Twitter/X</a><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Telegram</a></div>
+  </div>
+  <div class="footer-bottom"><span>2026 Anbeannews.</span><span>Furkan Bartin tarafindan kuruldu</span></div>
+</div></footer>
+<script>
+  const gunler=['Pazar','Pazartesi','Sali','Carsamba','Persembe','Cuma','Cumartesi'];
+  const aylar=['Ocak','Subat','Mart','Nisan','Mayis','Haziran','Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+  const now=new Date();
+  document.getElementById('tarih').textContent=gunler[now.getDay()]+', '+now.getDate()+' '+aylar[now.getMonth()]+' '+now.getFullYear();
+  let tumHaberler=[];
+  let aktifKategori='tumu';
+  function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az once';if(fark<60)return fark+' dakika once';if(fark<1440)return Math.floor(fark/60)+' saat once';return Math.floor(fark/1440)+' gun once';}
+  function resimUrl(h,seed){return h.resim_url||'https://picsum.photos/seed/'+seed+'/600/400';}
+  function heroRender(haberler){const hero=haberler[0];const sidebar=haberler.slice(1,4);if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henuz haber yok</div>';return;}const sidebarHTML=sidebar.map(function(h,i){return'<div class="sidebar-item fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'side'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="s-cat">'+( h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="s-time">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');document.getElementById('hero-section').innerHTML='<div class="hero-card fadeup" onclick="haberAc('+hero.id+')"><div class="hero-cat">'+( hero.kategori||'Gundem')+'</div><h1>'+hero.baslik+'</h1><p>'+(hero.ozet||'').substring(0,120)+'</p><div class="hero-meta">'+zamanFormat(hero.yayin_tarihi)+'</div></div><div class="sidebar-list">'+sidebarHTML+'</div>';if(hero.resim_url){document.querySelector('.hero-card').style.backgroundImage='linear-gradient(to top,rgba(15,14,12,.88) 45%,transparent 100%),url(\''+hero.resim_url+'\')';};}
+  function kartlarRender(haberler){const liste=haberler.slice(4);if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty"><h3>Henuz haber yok</h3><p>Haberler otomatik eklenecek</p></div>';return;}document.getElementById('haberler-grid').innerHTML=liste.map(function(h,i){return'<div class="news-card fadeup" onclick="haberAc('+h.id+')"><img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/><div class="n-cat">'+( h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="n-meta">'+zamanFormat(h.yayin_tarihi)+'</div></div>';}).join('');}
+  const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
+  async function haberleriYukle(kategori){kategori=kategori||'tumu';try{let url=SUPABASE_URL+'/rest/v1/haberler?select=*&order=yayin_tarihi.desc&limit=20';if(kategori!=='tumu')url+='&kategori=eq.'+encodeURIComponent(kategori);const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});if(!res.ok)throw new Error('HTTP '+res.status);tumHaberler=await res.json();if(tumHaberler.length>0){document.getElementById('breaking-text').textContent=tumHaberler[0].baslik;}else{document.getElementById('breaking-text').textContent='Yeni haberler icin takipte kalin';}heroRender(tumHaberler);kartlarRender(tumHaberler);}catch(err){document.getElementById('hero-section').innerHTML='<div class="loading">Baglanti hatasi: '+err.message+'</div>';}}
+  function filterKategori(kat){aktifKategori=kat;document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('active');});event.target.classList.add('active');document.getElementById('sec-title').textContent=kat==='tumu'?'Son Haberler':kat+' Haberleri';haberleriYukle(kat);}
+  function haberAc(id){const h=tumHaberler.find(function(x){return x.id===id;});if(!h)return;document.getElementById('m-cat').textContent=h.kategori||'Genel';document.getElementById('m-baslik').textContent=h.baslik;document.getElementById('m-meta').textContent=zamanFormat(h.yayin_tarihi);const resim=document.getElementById('m-resim');resim.src=resimUrl(h,'modal'+h.id);resim.style.display='block';document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'Icerik bulunamadi.';document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden';}
+  function modalKapat(e){if(e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}}
+  haberleriYukle();
+  setInterval(function(){haberleriYukle(aktifKategori);},300000);
+</script>
+</body>
+</html>
