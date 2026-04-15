@@ -147,9 +147,8 @@
 <div class="top-bar">
   <span class="top-bar-date" id="tarih">Yükleniyor...</span>
   <div class="top-bar-social">
-    <a href="https://twitter.com/anbeannews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeannews','_blank');return false;">Twitter/X</a>
-    <a href="https://instagram.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://instagram.com/anbeanews','_blank');return false;">Instagram</a>
-    <a href="#">anbeannews.com</a>
+    <a href="https://twitter.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeanews','_blank');return false;">Twitter/X</a>
+    <a href="#">anbeanews.com</a>
   </div>
 </div>
 
@@ -231,7 +230,7 @@
     <div class="footer-logo">AN<span>BEAN</span>EWS</div>
     <div class="footer-tagline">Türkiye'nin Güvenilir Dijital Haber Platformu</div>
     <div class="footer-grid">
-      <div><p class="footer-desc">Türkiye'nin ve dünyanın en güncel haberlerini 7/24 takip edin. TRT, Habertürk, NTV ve daha fazlasından otomatik güncellenen haber akışı.</p></div>
+      <div><p class="footer-desc">Türkiye'nin ve dünyanın en güncel haberlerini 7/24 takip edin. Habertürk ve daha fazlasından otomatik güncellenen haber akışı.</p></div>
       <div class="f-col">
         <h4>Kategoriler</h4>
         <a href="#" onclick="filterKategori('Gündem',null)">Gündem</a>
@@ -243,8 +242,7 @@
       </div>
       <div class="f-col">
         <h4>Takip Edin</h4>
-        <a href="https://twitter.com/anbeannews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeannews','_blank');return false;">Twitter/X</a>
-        <a href="https://instagram.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://instagram.com/anbeanews','_blank');return false;">Instagram</a>
+        <a href="https://twitter.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeanews','_blank');return false;">Twitter/X</a>
       </div>
     </div>
     <div class="footer-bottom"><span>2026 Anbeanews.</span><span>Tüm hakları saklıdır.</span></div>
@@ -265,13 +263,11 @@
 
   function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az önce';if(fark<60)return fark+' dakika önce';if(fark<1440)return Math.floor(fark/60)+' saat önce';return Math.floor(fark/1440)+' gün önce';}
 
-  // DÜZELTME: Geçersiz veya tekrarlanan resim URL'lerini filtrele
   function resimUrl(h, seed) {
     var url = h.resim_url;
     if (url && typeof url === 'string' && url.startsWith('http') && url.length > 10) {
       return url;
     }
-    // resim_url yoksa veya geçersizse her haber için benzersiz placeholder kullan
     return 'https://picsum.photos/seed/' + seed + '/600/400';
   }
 
@@ -387,7 +383,7 @@
     const haberBaslik=encodeURIComponent(h.baslik);
     const haberUrl=encodeURIComponent(haberLink);
     document.getElementById('wp-btn').href='https://wa.me/?text='+haberBaslik+'%20'+haberUrl;
-    document.getElementById('tw-btn').href='https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeannews';
+    document.getElementById('tw-btn').href='https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeanews';
     document.getElementById('modal').classList.add('open');
     document.body.style.overflow='hidden';
   }
