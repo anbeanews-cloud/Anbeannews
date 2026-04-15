@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>ANBEANNEWS</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
@@ -16,7 +16,9 @@
       --body:'Crimson Pro',Georgia,serif;
       --sans:'Montserrat',sans-serif
     }
-    body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7}
+    html{overflow-x:hidden}
+    body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7;overflow-x:hidden;max-width:100vw}
+    img{max-width:100%;height:auto;display:block}
 
     .top-bar{background:var(--navy);color:#fff;padding:6px 32px;display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
     .top-bar-date{color:rgba(255,255,255,.5)}
@@ -406,4 +408,4 @@
   setInterval(havaCek,1800000);
 </script>
 </body>
-</html> 
+</html>
