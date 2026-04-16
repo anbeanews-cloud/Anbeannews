@@ -36,9 +36,13 @@
     .top-bar-social{display:flex;gap:20px;align-items:center}
     .top-bar-social a{color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s}
     .top-bar-social a:hover{color:var(--blue3)}
-
     .dark-toggle{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;padding:3px 10px;font-size:12px;border-radius:20px;transition:all .2s}
     .dark-toggle:hover{background:rgba(255,255,255,.1)}
+
+    .notif-banner{display:none;background:var(--blue);color:#fff;padding:10px 32px;text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.05em;align-items:center;justify-content:center;gap:12px}
+    .notif-banner.show{display:flex}
+    .notif-banner button{background:#fff;color:var(--blue);border:none;padding:5px 14px;font-family:var(--sans);font-size:10px;font-weight:700;cursor:pointer;border-radius:20px}
+    .notif-banner .kapat{background:transparent;color:rgba(255,255,255,.6);font-size:16px;padding:0 4px}
 
     .masthead{border-bottom:1px solid var(--bg3);padding:0 32px;background:var(--bg);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(13,31,60,.06);transition:background .3s}
     .masthead-inner{max-width:1200px;margin:0 auto;padding:16px 0 12px;text-align:center;border-bottom:3px solid var(--navy)}
@@ -160,6 +164,12 @@
 </head>
 <body>
 
+<div class="notif-banner" id="notif-banner">
+  🔔 Son dakika haberleri için bildirim almak ister misiniz?
+  <button onclick="bildirimIzniAl()">Evet, İzin Ver</button>
+  <button class="kapat" onclick="document.getElementById('notif-banner').classList.remove('show')">✕</button>
+</div>
+
 <div class="top-bar">
   <span class="top-bar-date" id="tarih">Yükleniyor...</span>
   <div class="top-bar-social">
@@ -268,8 +278,31 @@
 
 <script>
   if('serviceWorker' in navigator){
-    window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js');});
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('/sw.js');
+    });
   }
+
+  // Bildirim izni
+  function bildirimIzniAl(){
+    if('Notification' in window){
+      Notification.requestPermission().then(function(perm){
+        if(perm==='granted'){
+          document.getElementById('notif-banner').classList.remove('show');
+          localStorage.setItem('notif','1');
+          new Notification('Anbeanews 🔔',{body:'Bildirimler açıldı! Son dakika haberlerini kaçırmayacaksınız.'});
+        }
+      });
+    }
+  }
+
+  window.addEventListener('load',function(){
+    if('Notification' in window && Notification.permission==='default' && localStorage.getItem('notif')!=='1'){
+      setTimeout(function(){
+        document.getElementById('notif-banner').classList.add('show');
+      },3000);
+    }
+  });
 
   // Karanlık mod
   function darkToggle(){
@@ -280,7 +313,8 @@
   if(localStorage.getItem('dark')==='1'){
     document.body.classList.add('dark');
     document.addEventListener('DOMContentLoaded',function(){
-      document.getElementById('dark-btn').textContent='☀️';
+      const btn=document.getElementById('dark-btn');
+      if(btn)btn.textContent='☀️';
     });
   }
 
