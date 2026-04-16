@@ -104,6 +104,7 @@
     .news-card p{font-size:14px;color:var(--ink3);line-height:1.6;font-weight:300}
     .nc-meta{font-family:var(--sans);font-size:9px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-top:10px}
     .nc-badge{display:inline-block;font-family:var(--sans);font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:var(--bg2);color:var(--navy);padding:2px 8px;margin-top:8px;border:1px solid var(--bg3)}
+    .nc-okunma{font-family:var(--sans);font-size:9px;color:var(--ink3);margin-top:4px}
     .empty{grid-column:1/-1;text-align:center;padding:60px 20px;font-family:var(--serif);font-size:24px;font-style:italic;color:var(--ink3)}
 
     .load-more-wrap{text-align:center;margin-bottom:48px}
@@ -255,11 +256,8 @@
 </footer>
 
 <script>
-  // PWA Service Worker
   if('serviceWorker' in navigator){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('/sw.js');
-    });
+    window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js');});
   }
 
   const gunler=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
@@ -273,21 +271,36 @@
   let sayfaOffset=0;
   const SAYFA_BOYUTU=6;
 
+  const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
+
   function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az önce';if(fark<60)return fark+' dakika önce';if(fark<1440)return Math.floor(fark/60)+' saat önce';return Math.floor(fark/1440)+' gün önce';}
 
-  function resimUrl(h, seed) {
-    var url = h.resim_url;
-    if (url && typeof url === 'string' && url.startsWith('http') && url.length > 10) {
-      return url;
-    }
-    return 'https://picsum.photos/seed/' + seed + '/600/400';
+  function okunmaFormat(sayi){
+    if(!sayi||sayi===0)return'';
+    if(sayi>=1000)return'👁 '+(sayi/1000).toFixed(1)+'B okuma';
+    return'👁 '+sayi+' okuma';
+  }
+
+  function resimUrl(h,seed){
+    var url=h.resim_url;
+    if(url&&typeof url==='string'&&url.startsWith('http')&&url.length>10)return url;
+    return'https://picsum.photos/seed/'+seed+'/600/400';
+  }
+
+  async function okunmaArttir(id){
+    await fetch(SUPABASE_URL+'/rest/v1/rpc/okunma_arttir',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({haber_id:id})
+    });
   }
 
   function heroRender(haberler){
     const hero=haberler[0];const sidebar=haberler.slice(1,4);
     if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henüz haber yok</div>';return;}
     const sidebarHTML=sidebar.map(function(h){
-      return'<div class="sidebar-story fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'ss'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="ss-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="ss-meta">'+zamanFormat(h.created_at)+'</div></div>';
+      return'<div class="sidebar-story fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'ss'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="ss-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="ss-meta">'+zamanFormat(h.created_at)+(h.okunma?' · '+okunmaFormat(h.okunma):'')+'</div></div>';
     }).join('');
     document.getElementById('hero-section').innerHTML=
       '<div class="hero-main fadeup" onclick="haberAc('+hero.id+')">'+
@@ -295,7 +308,7 @@
       '<img class="hero-img" src="'+resimUrl(hero,'hero'+hero.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+
       '<h1>'+hero.baslik+'</h1>'+
       '<p class="hero-excerpt">'+(hero.ozet||'').substring(0,160)+'</p>'+
-      '<div class="hero-meta">'+zamanFormat(hero.created_at)+(hero.kaynak?' · '+hero.kaynak:'')+'</div>'+
+      '<div class="hero-meta">'+zamanFormat(hero.created_at)+(hero.kaynak?' · '+hero.kaynak:'')+(hero.okunma?' · '+okunmaFormat(hero.okunma):'')+'</div>'+
       '</div>'+
       '<div class="hero-divider"></div>'+
       '<div class="sidebar-stories">'+sidebarHTML+'</div>';
@@ -306,7 +319,7 @@
     if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty">Henüz haber yok</div>';document.getElementById('daha-fazla-btn').style.display='none';return;}
     const goster=liste.slice(0,SAYFA_BOYUTU);
     document.getElementById('haberler-grid').innerHTML=goster.map(function(h){
-      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
     }).join('');
     sayfaOffset=SAYFA_BOYUTU;
     document.getElementById('daha-fazla-btn').style.display=liste.length>SAYFA_BOYUTU?'inline-block':'none';
@@ -316,14 +329,11 @@
     const liste=tumHaberler.slice(4);const yeni=liste.slice(sayfaOffset,sayfaOffset+SAYFA_BOYUTU);
     if(yeni.length===0){document.getElementById('daha-fazla-btn').style.display='none';return;}
     document.getElementById('haberler-grid').innerHTML+=yeni.map(function(h){
-      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
     }).join('');
     sayfaOffset+=SAYFA_BOYUTU;
     if(sayfaOffset>=liste.length)document.getElementById('daha-fazla-btn').style.display='none';
   }
-
-  const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
-  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
 
   async function haberleriYukle(kategori){
     kategori=kategori||'tumu';
@@ -384,9 +394,11 @@
   function haberAc(id){
     const h=tumHaberler.find(function(x){return x.id===id;});
     if(!h)return;
+    okunmaArttir(id);
+    h.okunma=(h.okunma||0)+1;
     document.getElementById('m-cat').textContent=h.kategori||'Genel';
     document.getElementById('m-baslik').textContent=h.baslik;
-    document.getElementById('m-meta').textContent=zamanFormat(h.created_at)+(h.kaynak?' · '+h.kaynak:'');
+    document.getElementById('m-meta').textContent=zamanFormat(h.created_at)+(h.kaynak?' · '+h.kaynak:'')+(h.okunma?' · '+okunmaFormat(h.okunma):'');
     const resim=document.getElementById('m-resim');
     resim.src=resimUrl(h,'modal'+h.id);resim.style.display='block';
     document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'İçerik bulunamadı.';
