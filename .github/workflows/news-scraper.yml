@@ -1,0 +1,38 @@
+name: Anbeanews Haber Çekici
+
+on:
+  # Her 15 dakikada bir otomatik çalışır
+  schedule:
+    - cron: "*/15 * * * *"
+
+  # Manuel tetikleme (test için)
+  workflow_dispatch:
+
+jobs:
+  haber-cek:
+    name: Haberleri Çek ve Supabase'e Yükle
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # ── 1. Kodu indir ────────────────────────────────────────────────
+      - name: Kodu Al
+        uses: actions/checkout@v4
+
+      # ── 2. Python kur ────────────────────────────────────────────────
+      - name: Python 3.11 Kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ── 3. Bağımlılıkları yükle ──────────────────────────────────────
+      - name: Bağımlılıkları Yükle
+        run: pip install -r requirements.txt
+
+      # ── 4. Scraper'ı çalıştır ────────────────────────────────────────
+      - name: Haberleri Çek
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python scraper.py
