@@ -74,6 +74,9 @@ RSS_KAYNAKLARI = [
     ("https://www.trthaber.com/yasam.rss",               "Sağlık",    "TRT Haber"),
     # ── Magazin / Kültür ─────────────────────────────────────────────────
     ("https://www.trthaber.com/kultur-sanat.rss",        "Magazin",   "TRT Haber"),
+    # ── Astroloji / Burç ─────────────────────────────────────────────────
+    ("https://www.astroloji.com/rss.xml",                "Astroloji", "Astroloji.com"),
+    ("https://www.haberler.com/astroloji/rss/",          "Astroloji", "Haberler.com"),
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════
