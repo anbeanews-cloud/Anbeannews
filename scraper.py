@@ -22,32 +22,60 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 MAX_YASH_SAAT = 24
 
+# Kategori isimleri sitedeki nav linkleriyle birebir ayni olmali
 RSS_KAYNAKLARI = [
-    ("https://www.trthaber.com/sondakika.rss",           "Gundem",    "TRT Haber"),
-    ("https://www.trthaber.com/gundem.rss",              "Gundem",    "TRT Haber"),
-    ("https://www.aa.com.tr/tr/rss/default?cat=guncel",  "Gundem",    "AA"),
-    ("https://t24.com.tr/rss",                           "Gundem",    "T24"),
-    ("https://feeds.bbci.co.uk/turkce/rss.xml",         "Gundem",    "BBC Turkce"),
-    ("https://rss.dw.com/rdf/rss-tur-all",              "Gundem",    "DW Turkce"),
-    ("https://tr.euronews.com/rss?format=mrss",         "Gundem",    "Euronews TR"),
-    ("https://tr.sputniknews.com/export/rss2/archive/index.xml", "Gundem", "Sputnik TR"),
-    ("https://www.trthaber.com/ekonomi.rss",             "Ekonomi",   "TRT Haber"),
-    ("https://www.aa.com.tr/tr/rss/default?cat=ekonomi", "Ekonomi",   "AA"),
-    ("https://www.trthaber.com/dunya.rss",               "Dunya",     "TRT Haber"),
-    ("https://www.aa.com.tr/tr/rss/default?cat=dunya",   "Dunya",     "AA"),
-    ("https://www.trthaber.com/spor.rss",                "Spor",      "TRT Haber"),
-    ("https://www.aa.com.tr/tr/rss/default?cat=spor",    "Spor",      "AA"),
-    ("https://www.trthaber.com/bilim-teknoloji.rss",     "Teknoloji", "TRT Haber"),
+    ("https://www.trthaber.com/sondakika.rss",            "ÇÜNDEM",    "TRT Haber"),
+    ("https://www.trthaber.com/gundem.rss",               "ÇÜNDEM",    "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=guncel",   "ÇÜNDEM",    "AA"),
+    ("https://t24.com.tr/rss",                            "ÇÜNDEM",    "T24"),
+    ("https://feeds.bbci.co.uk/turkce/rss.xml",          "ÇÜNDEM",    "BBC Türkçe"),
+    ("https://rss.dw.com/rdf/rss-tur-all",               "ÇÜNDEM",    "DW Türkçe"),
+    ("https://tr.euronews.com/rss?format=mrss",          "ÇÜNDEM",    "Euronews TR"),
+    ("https://tr.sputniknews.com/export/rss2/archive/index.xml", "ÇÜNDEM", "Sputnik TR"),
+    ("https://www.trthaber.com/ekonomi.rss",              "Ekonomi",   "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=ekonomi",  "Ekonomi",   "AA"),
+    ("https://www.trthaber.com/dunya.rss",                "Dünya",     "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=dunya",    "Dünya",     "AA"),
+    ("https://www.trthaber.com/spor.rss",                 "Spor",      "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=spor",     "Spor",      "AA"),
+    ("https://www.trthaber.com/bilim-teknoloji.rss",      "Teknoloji", "TRT Haber"),
 ]
 
+# Anahtarlar sitedeki kategori filtreleriyle birebir ayni
 KATEGORI_ANAHTAR = {
-    "Spor": ["mac","gol","futbol","basketbol","transfer","sampiyonluk","liga","turnuva","voleybol","tenis","olimpiyat","besiktas","galatasaray","fenerbahce","trabzonspor"],
-    "Ekonomi": ["dolar","euro","borsa","faiz","enflasyon","merkez bankasi","butce","vergi","ihracat","ithalat","ekonomi","piyasa","hisse","altin","doviz","tcmb","sgk","emekli"],
-    "Teknoloji": ["yapay zeka","ai","iphone","android","microsoft","google","apple","yazilim","uygulama","teknoloji","siber","uzay","nasa","roket","samsung","tesla"],
-    "Saglik": ["saglik","hastane","kanser","asi","pandemi","corona","covid","doktor","ilac","tedavi","obezite","salgin","diyet","kalp","ameliyat"],
-    "Dunya": ["abd","rusya","ukrayna","cin","avrupa","nato","bm","trump","putin","savas","suriye","iran","irak","yunanistan","israil","filistin"],
-    "Magazin": ["oyuncu","sarkici","film","dizi","muzik","magazin","unlu","evlilik","bosanma","sinema","tiyatro","sanat","moda","oscar"],
-    "Astroloji": ["astroloji","burc","yildiz fali","ay fali","kozmik","tarot"],
+    "Spor": [
+        "maç", "gol", "futbol", "basketbol", "transfer", "şampiyon",
+        "liga", "kupa", "turnuva", "voleybol", "tenis", "olimpiyat",
+        "beşiktaş", "galatasaray", "fenerbahçe", "trabzonspor", "milli takım",
+    ],
+    "Ekonomi": [
+        "dolar", "euro", "borsa", "faiz", "enflasyon", "merkez bankası",
+        "bütçe", "vergi", "ihracat", "ithalat", "ekonomi", "piyasa",
+        "hisse", "altın", "döviz", "tcmb", "sgk", "emekli",
+    ],
+    "Teknoloji": [
+        "yapay zeka", "yapay zekâ", "iphone", "android", "microsoft",
+        "google", "apple", "yazılım", "uygulama", "teknoloji", "siber",
+        "uzay", "nasa", "roket", "samsung", "tesla", "elektrikli araç",
+    ],
+    "Sağlık": [
+        "sağlık", "hastane", "kanser", "aşı", "pandemi", "corona",
+        "covid", "doktor", "ilaç", "tedavi", "obezite", "salgın",
+        "diyet", "kalp", "ameliyat",
+    ],
+    "Dünya": [
+        "abd", "rusya", "ukrayna", "çin", "avrupa", "nato", "bm",
+        "trump", "putin", "savaş", "suriye", "iran", "irak",
+        "yunanistan", "israil", "filistin", "biden", "macron",
+    ],
+    "Magazin": [
+        "oyuncu", "şarkıcı", "film", "dizi", "müzik", "magazin",
+        "ünlü", "evlilik", "boşanma", "sinema", "tiyatro", "sanat",
+        "moda", "oscar", "grammy",
+    ],
+    "Astroloji": [
+        "astroloji", "burç", "yıldız falı", "ay falı", "kozmik", "tarot",
+    ],
 }
 
 _SSL_CTX = ssl.create_default_context()
@@ -106,12 +134,11 @@ def og_image_cek(url):
         return ""
     try:
         soup = BeautifulSoup(data, "lxml")
-        for prop in ["og:image"]:
-            tag = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
-            if tag:
-                src = tag.get("content", "")
-                if src.startswith("http"):
-                    return src
+        tag = soup.find("meta", property="og:image") or soup.find("meta", attrs={"name": "og:image"})
+        if tag:
+            src = tag.get("content", "")
+            if src.startswith("http"):
+                return src
         for name in ["twitter:image", "twitter:image:src"]:
             tag = soup.find("meta", attrs={"name": name})
             if tag:
@@ -231,18 +258,11 @@ def sb_req(method, path, data=None, params=None, extra_hdrs=None):
 
 
 def null_kayitlari_sil():
-    """n8n veya hatalı otomasyonun eklediği null başlıklı kayıtları siler."""
     status, data = sb_req("GET", "haberler", params={"select": "id", "baslik": "is.null"})
     if status != 200 or not data:
-        # string baslik olanlar kontrol et
-        status2, data2 = sb_req("GET", "haberler", params={"select": "id,baslik", "limit": "5"})
-        print("  Ornek kayitlar: " + str(data2)[:200])
         return 0
-
-    print("  " + str(len(data)) + " adet null baslikli kayit bulundu, siliniyor...")
-    status_del, _ = sb_req("DELETE", "haberler", params={"baslik": "is.null"},
-                           extra_hdrs={"Prefer": "return=minimal"})
-    print("  Silme sonucu: HTTP " + str(status_del))
+    print("  " + str(len(data)) + " null kayit siliniyor...")
+    sb_req("DELETE", "haberler", params={"baslik": "is.null"}, extra_hdrs={"Prefer": "return=minimal"})
     return len(data)
 
 
@@ -269,7 +289,6 @@ def main():
     print("  Anbeanews Scraper | " + datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
     print("=" * 60)
 
-    # 1. Baglanti testi + sutun bilgisi
     print("\nSupabase baglanti testi...")
     status, data = sb_req("GET", "haberler", params={"select": "*", "limit": "1"})
     print("  HTTP " + str(status))
@@ -279,12 +298,10 @@ def main():
         print("  HATA: " + str(data)[:200])
         sys.exit(1)
 
-    # 2. Null/bozuk kayitlari temizle
     print("\nBozuk kayitlar temizleniyor...")
     silinen = null_kayitlari_sil()
     print("  " + str(silinen) + " kayit silindi")
 
-    # 3. Mevcut URL'ler
     print("\nMevcut URL'ler aliniyor...")
     mevcut = mevcut_url_seti()
     print("  -> " + str(len(mevcut)) + " kayit\n")
