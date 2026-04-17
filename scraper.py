@@ -50,15 +50,6 @@ KATEGORI_ANAHTAR = {
     "Astroloji": ["astroloji","burc","yildiz fali","ay fali","kozmik","tarot"],
 }
 
-
-def kategori_tahmin(baslik, varsayilan):
-    bl = baslik.lower()
-    for kat, kelimeler in KATEGORI_ANAHTAR.items():
-        if any(k in bl for k in kelimeler):
-            return kat
-    return varsayilan
-
-
 _SSL_CTX = ssl.create_default_context()
 _SSL_CTX.check_hostname = False
 _SSL_CTX.verify_mode = ssl.CERT_NONE
@@ -78,17 +69,25 @@ def _next_ua():
     return ua
 
 
+def _hdrs(extra=None):
+    h = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json",
+    }
+    if extra:
+        h.update(extra)
+    return h
+
+
 def http_get(url, timeout=10):
     for attempt in range(2):
         try:
-            req = urllib.request.Request(
-                url,
-                headers={
-                    "User-Agent": _next_ua(),
-                    "Accept": "application/rss+xml,application/xml,text/xml,text/html,*/*",
-                    "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
-                },
-            )
+            req = urllib.request.Request(url, headers={
+                "User-Agent": _next_ua(),
+                "Accept": "application/rss+xml,application/xml,text/xml,text/html,*/*",
+                "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
+            })
             with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
                 return resp.read()
         except Exception as e:
@@ -107,16 +106,18 @@ def og_image_cek(url):
         return ""
     try:
         soup = BeautifulSoup(data, "lxml")
-        tag = soup.find("meta", property="og:image") or soup.find("meta", attrs={"name": "og:image"})
-        if tag:
-            src = tag.get("content", "")
-            if src.startswith("http"):
-                return src
-        tag = soup.find("meta", attrs={"name": "twitter:image"}) or soup.find("meta", attrs={"name": "twitter:image:src"})
-        if tag:
-            src = tag.get("content", "")
-            if src.startswith("http"):
-                return src
+        for prop in ["og:image"]:
+            tag = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
+            if tag:
+                src = tag.get("content", "")
+                if src.startswith("http"):
+                    return src
+        for name in ["twitter:image", "twitter:image:src"]:
+            tag = soup.find("meta", attrs={"name": name})
+            if tag:
+                src = tag.get("content", "")
+                if src.startswith("http"):
+                    return src
     except Exception:
         pass
     return ""
@@ -141,14 +142,21 @@ def html_temizle(metin):
     return re.sub(r"\s+", " ", metin).strip()
 
 
+def kategori_tahmin(baslik, varsayilan):
+    bl = baslik.lower()
+    for kat, kelimeler in KATEGORI_ANAHTAR.items():
+        if any(k in bl for k in kelimeler):
+            return kat
+    return varsayilan
+
+
 def rss_oku(url):
     data = http_get(url, timeout=12)
     if not data:
         return []
     try:
         root = ET.fromstring(data)
-    except ET.ParseError as e:
-        print("    [!] XML hatasi: " + str(e))
+    except ET.ParseError:
         return []
 
     items = root.findall(".//item")
@@ -205,62 +213,54 @@ def tarih_ayristir(tarih_str):
     return None
 
 
-def sb_test():
-    """Supabase baglantiyi test et ve tablo sutunlarini goster."""
-    url = SUPABASE_URL + "/rest/v1/haberler?select=*&limit=1"
-    req = urllib.request.Request(url, headers={
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-    })
+def sb_req(method, path, data=None, params=None, extra_hdrs=None):
+    url = SUPABASE_URL + "/rest/v1/" + path
+    if params:
+        url += "?" + urllib.parse.urlencode(params)
+    body = json.dumps(data, ensure_ascii=False).encode("utf-8") if data else None
+    req = urllib.request.Request(url, data=body, method=method, headers=_hdrs(extra_hdrs))
     try:
-        with urllib.request.urlopen(req, timeout=10, context=_SSL_CTX) as r:
-            data = json.loads(r.read())
-            if data:
-                print("  Mevcut sutunlar: " + str(list(data[0].keys())))
-            else:
-                print("  Tablo bos, sutun bilgisi alinamadi")
-            return True
+        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
+            raw = r.read()
+            return r.status, json.loads(raw) if raw else None
+    except urllib.error.HTTPError as e:
+        body_err = e.read().decode(errors="ignore")
+        return e.code, body_err
     except Exception as e:
-        print("  [!] Supabase TEST hatasi: " + str(e))
-        return False
+        return 0, str(e)
+
+
+def null_kayitlari_sil():
+    """n8n veya hatalı otomasyonun eklediği null başlıklı kayıtları siler."""
+    status, data = sb_req("GET", "haberler", params={"select": "id", "baslik": "is.null"})
+    if status != 200 or not data:
+        # string baslik olanlar kontrol et
+        status2, data2 = sb_req("GET", "haberler", params={"select": "id,baslik", "limit": "5"})
+        print("  Ornek kayitlar: " + str(data2)[:200])
+        return 0
+
+    print("  " + str(len(data)) + " adet null baslikli kayit bulundu, siliniyor...")
+    status_del, _ = sb_req("DELETE", "haberler", params={"baslik": "is.null"},
+                           extra_hdrs={"Prefer": "return=minimal"})
+    print("  Silme sonucu: HTTP " + str(status_del))
+    return len(data)
 
 
 def sb_insert(kayit):
-    url  = SUPABASE_URL + "/rest/v1/haberler"
-    data = json.dumps(kayit, ensure_ascii=False).encode("utf-8")
-    req  = urllib.request.Request(url, data=data, method="POST", headers={
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal",
-    })
-    try:
-        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
-            return r.status in (200, 201, 204)
-    except urllib.error.HTTPError as e:
-        body = e.read().decode(errors="ignore")
-        if e.code == 409:
-            return True
-        print("  [!] INSERT " + str(e.code) + ": " + body[:200])
-        return False
-    except Exception as e:
-        print("  [!] INSERT hatasi: " + str(e))
-        return False
+    status, resp = sb_req("POST", "haberler", data=kayit, extra_hdrs={"Prefer": "return=minimal"})
+    if status in (200, 201, 204):
+        return True
+    if status == 409:
+        return True
+    print("  [!] INSERT " + str(status) + ": " + str(resp)[:200])
+    return False
 
 
 def mevcut_url_seti():
-    url = SUPABASE_URL + "/rest/v1/haberler?select=kaynak_url&order=created_at.desc&limit=1000"
-    req = urllib.request.Request(url, headers={
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-    })
-    try:
-        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
-            sonuc = json.loads(r.read())
-        return {h["kaynak_url"] for h in sonuc if h.get("kaynak_url")}
-    except Exception as e:
-        print("  [!] URL seti hatasi: " + str(e))
+    status, data = sb_req("GET", "haberler", params={"select": "kaynak_url", "order": "created_at.desc", "limit": "1000"})
+    if status != 200 or not data:
         return set()
+    return {h["kaynak_url"] for h in data if h.get("kaynak_url")}
 
 
 def main():
@@ -269,16 +269,27 @@ def main():
     print("  Anbeanews Scraper | " + datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
     print("=" * 60)
 
+    # 1. Baglanti testi + sutun bilgisi
     print("\nSupabase baglanti testi...")
-    if not sb_test():
-        print("Supabase'e baglanamadi, cikiliyor.")
+    status, data = sb_req("GET", "haberler", params={"select": "*", "limit": "1"})
+    print("  HTTP " + str(status))
+    if status == 200 and data:
+        print("  Sutunlar: " + str(list(data[0].keys())))
+    elif status != 200:
+        print("  HATA: " + str(data)[:200])
         sys.exit(1)
 
-    sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
+    # 2. Null/bozuk kayitlari temizle
+    print("\nBozuk kayitlar temizleniyor...")
+    silinen = null_kayitlari_sil()
+    print("  " + str(silinen) + " kayit silindi")
+
+    # 3. Mevcut URL'ler
     print("\nMevcut URL'ler aliniyor...")
     mevcut = mevcut_url_seti()
     print("  -> " + str(len(mevcut)) + " kayit\n")
 
+    sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
     eklenen = atlanan_eski = atlanan_dup = atlanan_hata = 0
 
     for rss_url, varsayilan_kat, kaynak_adi in RSS_KAYNAKLARI:
@@ -309,7 +320,6 @@ def main():
 
             kategori = kategori_tahmin(madde["baslik"], varsayilan_kat)
 
-            # created_at ve icerik dahil edilmiyor: Supabase otomatik atar
             kayit = {
                 "baslik":     madde["baslik"],
                 "ozet":       madde["ozet"],
