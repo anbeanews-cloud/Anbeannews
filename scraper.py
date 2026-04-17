@@ -50,17 +50,6 @@ KATEGORI_ANAHTAR = {
     "Astroloji": ["astroloji","burc","yildiz fali","ay fali","kozmik","tarot"],
 }
 
-KATEGORI_TR = {
-    "Gundem": "Gundem",
-    "Ekonomi": "Ekonomi",
-    "Dunya": "Dunya",
-    "Spor": "Spor",
-    "Teknoloji": "Teknoloji",
-    "Saglik": "Saglik",
-    "Magazin": "Magazin",
-    "Astroloji": "Astroloji",
-}
-
 
 def kategori_tahmin(baslik, varsayilan):
     bl = baslik.lower()
@@ -173,8 +162,7 @@ def rss_oku(url):
         ozet   = (_txt(item, "description") or _txt(item, "summary") or
                   _txt(item, "{" + _ATOM_NS + "}summary") or _txt(item, "{" + _ATOM_NS + "}content"))
         tarih  = (_txt(item, "pubDate") or _txt(item, "published") or
-                  _txt(item, "{" + _ATOM_NS + "}published") or _txt(item, "updated") or
-                  _txt(item, "{" + _ATOM_NS + "}updated"))
+                  _txt(item, "{" + _ATOM_NS + "}published") or _txt(item, "updated"))
 
         if not link:
             link_el = item.find("{" + _ATOM_NS + "}link")
@@ -214,32 +202,27 @@ def tarih_ayristir(tarih_str):
         return parsedate_to_datetime(tarih_str).astimezone(timezone.utc)
     except Exception:
         pass
-    temiz = tarih_str.strip().replace("Z", "+00:00")
-    for fmt in ["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M%z", "%Y-%m-%d %H:%M:%S%z", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"]:
-        try:
-            dt = datetime.strptime(temiz[:len(fmt) + 6], fmt)
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            return dt.astimezone(timezone.utc)
-        except Exception:
-            continue
     return None
 
 
-def sb_get(endpoint, params=None):
-    url = SUPABASE_URL + "/rest/v1/" + endpoint
-    if params:
-        url += "?" + urllib.parse.urlencode(params)
+def sb_test():
+    """Supabase baglantiyi test et ve tablo sutunlarini goster."""
+    url = SUPABASE_URL + "/rest/v1/haberler?select=*&limit=1"
     req = urllib.request.Request(url, headers={
         "apikey": SUPABASE_KEY,
         "Authorization": "Bearer " + SUPABASE_KEY,
     })
     try:
-        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
-            return json.loads(r.read())
+        with urllib.request.urlopen(req, timeout=10, context=_SSL_CTX) as r:
+            data = json.loads(r.read())
+            if data:
+                print("  Mevcut sutunlar: " + str(list(data[0].keys())))
+            else:
+                print("  Tablo bos, sutun bilgisi alinamadi")
+            return True
     except Exception as e:
-        print("  [!] Supabase GET: " + str(e))
-        return None
+        print("  [!] Supabase TEST hatasi: " + str(e))
+        return False
 
 
 def sb_insert(kayit):
@@ -253,12 +236,12 @@ def sb_insert(kayit):
     })
     try:
         with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
-            return r.status in (200, 201)
+            return r.status in (200, 201, 204)
     except urllib.error.HTTPError as e:
         body = e.read().decode(errors="ignore")
         if e.code == 409:
             return True
-        print("  [!] INSERT " + str(e.code) + ": " + body[:150])
+        print("  [!] INSERT " + str(e.code) + ": " + body[:200])
         return False
     except Exception as e:
         print("  [!] INSERT hatasi: " + str(e))
@@ -266,24 +249,33 @@ def sb_insert(kayit):
 
 
 def mevcut_url_seti():
-    sonuc = sb_get("haberler", {"select": "kaynak_url", "order": "created_at.desc", "limit": "1000"})
-    if not sonuc:
+    url = SUPABASE_URL + "/rest/v1/haberler?select=kaynak_url&order=created_at.desc&limit=1000"
+    req = urllib.request.Request(url, headers={
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
+            sonuc = json.loads(r.read())
+        return {h["kaynak_url"] for h in sonuc if h.get("kaynak_url")}
+    except Exception as e:
+        print("  [!] URL seti hatasi: " + str(e))
         return set()
-    return {h["kaynak_url"] for h in sonuc if h.get("kaynak_url")}
 
 
 def main():
     t0 = time.time()
     print("=" * 60)
     print("  Anbeanews Scraper | " + datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
-    print("  SUPABASE_URL: " + SUPABASE_URL)
-    print("  KEY length  : " + str(len(SUPABASE_KEY)))
     print("=" * 60)
 
-    sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
-    print("Yas siniri: son " + str(MAX_YASH_SAAT) + "h\n")
+    print("\nSupabase baglanti testi...")
+    if not sb_test():
+        print("Supabase'e baglanamadi, cikiliyor.")
+        sys.exit(1)
 
-    print("Mevcut URL'ler aliniyor...")
+    sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
+    print("\nMevcut URL'ler aliniyor...")
     mevcut = mevcut_url_seti()
     print("  -> " + str(len(mevcut)) + " kayit\n")
 
@@ -306,9 +298,7 @@ def main():
                 continue
 
             pub_dt = tarih_ayristir(madde["tarih_str"])
-            if pub_dt is None:
-                pub_dt = datetime.now(timezone.utc) - timedelta(minutes=30)
-            elif pub_dt < sinir:
+            if pub_dt is not None and pub_dt < sinir:
                 atlanan_eski += 1
                 continue
 
@@ -319,12 +309,11 @@ def main():
 
             kategori = kategori_tahmin(madde["baslik"], varsayilan_kat)
 
+            # created_at ve icerik dahil edilmiyor: Supabase otomatik atar
             kayit = {
                 "baslik":     madde["baslik"],
                 "ozet":       madde["ozet"],
-                "icerik":     madde["ozet"],
                 "kategori":   kategori,
-                "created_at": pub_dt.isoformat(),
                 "okunma":     0,
                 "kaynak":     kaynak_adi,
                 "kaynak_url": link,
