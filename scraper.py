@@ -394,6 +394,40 @@ def supabase_insert(kayit: dict) -> bool:
         return False
 
 
+def supabase_patch(endpoint: str, params: dict, data: dict) -> bool:
+    url = f"{SUPABASE_URL}/rest/v1/{endpoint}"
+    if params:
+        url += "?" + urllib.parse.urlencode(params)
+    body = json.dumps(data).encode("utf-8")
+    hdrs = {**_sb_headers(), "Prefer": "return=minimal"}
+    req = urllib.request.Request(url, data=body, method="PATCH", headers=hdrs)
+    try:
+        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
+            return r.status in (200, 204)
+    except urllib.error.HTTPError as e:
+        err = e.read().decode(errors="ignore")
+        print(f"  [!] Supabase PATCH {e.code}: {err[:120]}")
+        return False
+    except Exception as e:
+        print(f"  [!] Supabase PATCH hatası: {e}")
+        return False
+
+
+def kategorileri_duzelt():
+    """Eski ASCII kategori isimlerini doğru Türkçe karakterlere günceller."""
+    duzeltmeler = [
+        ("Gundem", "Gündem"),
+        ("Dunya",  "Dünya"),
+        ("Saglik", "Sağlık"),
+    ]
+    print("Kategori isimleri kontrol ediliyor...")
+    for yanlis, dogru in duzeltmeler:
+        ok = supabase_patch("haberler", {"kategori": f"eq.{yanlis}"}, {"kategori": dogru})
+        if ok:
+            print(f"  ✓ '{yanlis}' → '{dogru}' güncellendi")
+    print()
+
+
 def mevcut_url_seti() -> set[str]:
     """
     Duplicate kontrolü için Supabase'deki mevcut kaynak URL'lerini çeker.
@@ -419,6 +453,8 @@ def main():
 
     sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
     print(f"\nYaş sınırı: son {MAX_YASH_SAAT} saat  (>= {sinir.strftime('%d.%m %H:%M')} UTC)\n")
+
+    kategorileri_duzelt()
 
     print("Supabase'den mevcut haber URL'leri alınıyor...")
     mevcut = mevcut_url_seti()
