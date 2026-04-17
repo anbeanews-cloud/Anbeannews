@@ -66,17 +66,17 @@ RSS_KAYNAKLARI = [
     ("https://www.trthaber.com/dunya.rss",               "Dünya",     "TRT Haber"),
     ("https://www.aa.com.tr/tr/rss/default?cat=dunya",   "Dünya",     "AA"),
     # ── Spor ─────────────────────────────────────────────────────────────
-    ("https://www.trthaber.com/spor.rss",                "Spor",      "TRT Haber"),
     ("https://www.aa.com.tr/tr/rss/default?cat=spor",    "Spor",      "AA"),
     # ── Teknoloji ────────────────────────────────────────────────────────
-    ("https://www.trthaber.com/bilim-teknoloji.rss",     "Teknoloji", "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=teknoloji", "Teknoloji", "AA"),
     # ── Sağlık ───────────────────────────────────────────────────────────
-    ("https://www.trthaber.com/yasam.rss",               "Sağlık",    "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=saglik",  "Sağlık",    "AA"),
     # ── Magazin / Kültür ─────────────────────────────────────────────────
     ("https://www.trthaber.com/kultur-sanat.rss",        "Magazin",   "TRT Haber"),
     # ── Astroloji / Burç ─────────────────────────────────────────────────
-    ("https://www.astroloji.com/rss.xml",                "Astroloji", "Astroloji.com"),
-    ("https://www.haberler.com/astroloji/rss/",          "Astroloji", "Haberler.com"),
+    ("https://www.sozcu.com.tr/feeds-rss-category-astroloji", "Astroloji", "Sözcü"),
+    ("https://www.haberturk.com/rss/kategori/astroloji.xml",  "Astroloji", "Haberturk"),
+    ("https://indigodergisi.com/category/astroloji/feed/",    "Astroloji", "Indigo Dergisi"),
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════
