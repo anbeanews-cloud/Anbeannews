@@ -1,0 +1,19 @@
+{
+  "name": "Anbeanews",
+  "short_name": "Anbeanews",
+  "description": "Türkiye'nin güncel haber kaynağı",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1f3c",
+  "theme_color": "#0d1f3c",
+  "lang": "tr",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
