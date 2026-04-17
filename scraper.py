@@ -416,6 +416,19 @@ def supabase_patch(endpoint: str, params: dict, data: dict) -> bool:
         return False
 
 
+def eski_haberleri_temizle():
+    """7 günden eski haberleri Supabase'den siler."""
+    sinir = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    url = f"{SUPABASE_URL}/rest/v1/haberler?created_at=lt.{urllib.parse.quote(sinir)}"
+    hdrs = {**_sb_headers(), "Prefer": "return=minimal"}
+    req = urllib.request.Request(url, method="DELETE", headers=hdrs)
+    try:
+        with urllib.request.urlopen(req, timeout=15, context=_SSL_CTX) as r:
+            print(f"  ✓ 7 günden eski haberler silindi")
+    except Exception as e:
+        print(f"  [!] Temizleme hatası: {e}")
+
+
 def kategorileri_duzelt():
     """Eski ASCII kategori isimlerini doğru Türkçe karakterlere günceller."""
     duzeltmeler = [
@@ -457,6 +470,7 @@ def main():
     sinir = datetime.now(timezone.utc) - timedelta(hours=MAX_YASH_SAAT)
     print(f"\nYaş sınırı: son {MAX_YASH_SAAT} saat  (>= {sinir.strftime('%d.%m %H:%M')} UTC)\n")
 
+    eski_haberleri_temizle()
     kategorileri_duzelt()
 
     print("Supabase'den mevcut haber URL'leri alınıyor...")
