@@ -34,14 +34,16 @@ import os
 SUPABASE_URL = os.environ.get(
     "SUPABASE_URL",
     "https://qmgfqkmsjotzxnekgbey.supabase.co"
-)
+).strip()
+
+# .strip() → secret kopyalanırken giren satır sonu/boşluk karakterlerini temizler
 SUPABASE_KEY = os.environ.get(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw"
-)
+).strip()
 
-# Kaç saatlik haber çekilsin (büyük değer = daha fazla eski haber riski)
-MAX_YASH_SAAT = 6
+# Kaç saatlik haber çekilsin
+MAX_YASH_SAAT = 24
 
 # ═══════════════════════════════════════════════════════════════════════════
 # RSS KAYNAKLARI
