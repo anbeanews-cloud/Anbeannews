@@ -53,13 +53,13 @@ RSS_KAYNAKLARI = [
     ("https://www.aa.com.tr/tr/rss/default?cat=ekonomi", "Ekonomi",   "AA"),
     ("https://www.trthaber.com/dunya.rss",               "Dünya",     "TRT Haber"),
     ("https://www.aa.com.tr/tr/rss/default?cat=dunya",   "Dünya",     "AA"),
-    ("https://www.trthaber.com/spor.rss",                "Spor",      "TRT Haber"),
     ("https://www.aa.com.tr/tr/rss/default?cat=spor",    "Spor",      "AA"),
-    ("https://www.trthaber.com/bilim-teknoloji.rss",     "Teknoloji", "TRT Haber"),
-    ("https://www.trthaber.com/yasam.rss",               "Sağlık",    "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=teknoloji", "Teknoloji", "AA"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=saglik",  "Sağlık",    "AA"),
     ("https://www.trthaber.com/kultur-sanat.rss",        "Magazin",   "TRT Haber"),
-    ("https://www.astroloji.com/rss.xml",                "Astroloji", "Astroloji.com"),
-    ("https://www.haberler.com/astroloji/rss/",          "Astroloji", "Haberler.com"),
+    ("https://www.sozcu.com.tr/feeds-rss-category-astroloji", "Astroloji", "Sözcü"),
+    ("https://www.haberturk.com/rss/kategori/astroloji.xml",  "Astroloji", "Haberturk"),
+    ("https://indigodergisi.com/category/astroloji/feed/",    "Astroloji", "Indigo Dergisi"),
 ]
 
 KATEGORI_ANAHTAR = {
@@ -95,7 +95,7 @@ KATEGORI_ANAHTAR = {
     ],
     "Astroloji": [
         "astroloji", "burç", "yıldız falı", "ay falı", "kozmik",
-        "enerji yükseliş", "tarot", "ykselme", "retro",
+        "enerji yükseliş", "tarot", "retro",
     ],
 }
 
@@ -356,13 +356,13 @@ def kategorileri_duzelt():
         ("Gundem", "Gündem"),
         ("Dunya",  "Dünya"),
         ("Saglik", "Sağlık"),
-        ("\u00c7ÜNDEM", "Gündem"),
+        ("ÇÜNDEM", "Gündem"),
     ]
     print("Kategori isimleri kontrol ediliyor...")
     for yanlis, dogru in duzeltmeler:
         ok = supabase_patch("haberler", {"kategori": f"eq.{yanlis}"}, {"kategori": dogru})
         if ok:
-            print(f"  \u2713 '{yanlis}' → '{dogru}' güncellendi")
+            print(f"  ✓ '{yanlis}' → '{dogru}' güncellendi")
     print()
 
 
@@ -442,7 +442,7 @@ def main():
             if supabase_insert(kayit):
                 eklenen += 1
                 mevcut.add(link)
-                print(f"    \u2713 [{kategori:10s}] {madde['baslik'][:52]}")
+                print(f"    ✓ [{kategori:10s}] {madde['baslik'][:52]}")
             else:
                 atlanan_hata += 1
 
@@ -451,11 +451,11 @@ def main():
 
     sure = round(time.time() - baslangic, 1)
     print("=" * 64)
-    print(f"  \u2713 Eklenen    : {eklenen}")
-    print(f"  \u21b7 Duplikat   : {atlanan_dup}")
-    print(f"  \u23f0 Eski (>{MAX_YASH_SAAT}h) : {atlanan_eski}")
-    print(f"  \u2717 Hata       : {atlanan_hata}")
-    print(f"  \u23f1 Süre       : {sure}s")
+    print(f"  ✓ Eklenen    : {eklenen}")
+    print(f"  ↷ Duplikat   : {atlanan_dup}")
+    print(f"  ⏰ Eski (>{MAX_YASH_SAAT}h) : {atlanan_eski}")
+    print(f"  ✗ Hata       : {atlanan_hata}")
+    print(f"  ⏱ Süre       : {sure}s")
     print("=" * 64)
 
     if eklenen == 0 and atlanan_hata > 0:
