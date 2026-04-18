@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>ANBEANEWS</title>
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#0d1f3c"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Anbeanews"/>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" href="/icon.svg"/>
+  <link rel="canonical" href="<https://anbeanews.vercel.app>"/>
+  <meta name="description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor, teknoloji ve sağlık haberleri."/>
+  <meta name="keywords" content="haber, gündem, ekonomi, spor, teknoloji, dünya, Türkiye, son dakika"/>
+  <meta property="og:title" content="Anbeanews - Güncel Türkçe Haberler"/>
+  <meta property="og:description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor, teknoloji haberleri."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="<https://anbeanews.vercel.app>"/>
+  <meta property="og:image" content="<https://anbeanews.vercel.app/icon.svg>"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Anbeanews - Güncel Türkçe Haberler"/>
+  <meta name="twitter:description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor haberleri."/>
+  <meta name="twitter:image" content="<https://anbeanews.vercel.app/icon.svg>"/>
+  <link href="<https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap>" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#ffffff;--bg2:#f4f7fb;--bg3:#e8eef7;
+      --navy:#0d1f3c;--navy2:#1a3560;--navy3:#2a4f8a;
+      --blue:#1e5bbd;--blue2:#3a7dd4;--blue3:#5a9ee8;
+      --ink:#0d1f3c;--ink2:#2a4060;--ink3:#5a7090;
+      --serif:'Cormorant Garamond',Georgia,serif;
+      --body:'Crimson Pro',Georgia,serif;
+      --sans:'Montserrat',sans-serif
+    }
+    body.dark{
+      --bg:#0f1117;--bg2:#1a1d27;--bg3:#252836;
+      --navy:#1a1d27;--navy2:#252836;
+      --ink:#e8eaf0;--ink2:#b0b8cc;--ink3:#6b7590;
+      --blue:#5a9ee8;--blue2:#3a7dd4;--blue3:#5a9ee8;
+    }
+    html{overflow-x:hidden}
+    body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7;overflow-x:hidden;max-width:100vw;transition:background .3s,color .3s}
+    img{max-width:100%;height:auto;display:block}
+
+    .top-bar{background:var(--navy);color:#fff;padding:6px 32px;display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+    .top-bar-date{color:rgba(255,255,255,.5)}
+    .top-bar-social{display:flex;gap:20px;align-items:center}
+    .top-bar-social a{color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s}
+    .top-bar-social a:hover{color:var(--blue3)}
+    .dark-toggle{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;cursor:pointer;padding:3px 10px;font-size:12px;border-radius:20px;transition:all .2s}
+    .dark-toggle:hover{background:rgba(255,255,255,.1)}
+
+    .notif-banner{display:none;background:var(--blue);color:#fff;padding:10px 32px;text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.05em;align-items:center;justify-content:center;gap:12px}
+    .notif-banner.show{display:flex}
+    .notif-banner button{background:#fff;color:var(--blue);border:none;padding:5px 14px;font-family:var(--sans);font-size:10px;font-weight:700;cursor:pointer;border-radius:20px}
+    .notif-banner .kapat{background:transparent;color:rgba(255,255,255,.6);font-size:16px;padding:0 4px}
+
+    .masthead{border-bottom:1px solid var(--bg3);padding:0 32px;background:var(--bg);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(13,31,60,.06);transition:background .3s}
+    .masthead-inner{max-width:1200px;margin:0 auto;padding:16px 0 12px;text-align:center;border-bottom:3px solid var(--navy)}
+    .logo{font-family:var(--serif);font-size:clamp(40px,6vw,80px);font-weight:300;letter-spacing:.05em;color:var(--navy);text-decoration:none;line-height:1}
+    body.dark .logo{color:var(--ink)}
+    .logo span{color:var(--blue);font-style:italic;font-weight:600}
+    .logo-sub{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:6px}
+    .logo-line{flex:1;max-width:100px;height:1px;background:var(--ink3)}
+    .logo-tagline{font-family:var(--sans);font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--ink3)}
+    .nav-wrap{max-width:1200px;margin:0 auto;padding:10px 0}
+    nav{display:flex;justify-content:center;gap:0;overflow-x:auto;scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    nav a{font-family:var(--sans);font-size:10px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:var(--ink2);padding:7px 18px;transition:color .2s;border-right:1px solid var(--bg3);cursor:pointer;white-space:nowrap}
+    nav a:first-child{border-left:1px solid var(--bg3)}
+    nav a:hover,nav a.active{color:var(--blue);font-weight:600}
+
+    .search-wrap{background:var(--bg2);border-bottom:1px solid var(--bg3);padding:10px 32px;transition:background .3s}
+    .search-inner{max-width:600px;margin:0 auto;display:flex;background:var(--bg);border:1px solid var(--bg3);overflow:hidden;box-shadow:0 2px 8px rgba(13,31,60,.06)}
+    .search-inner input{flex:1;padding:10px 16px;font-family:var(--sans);font-size:12px;border:none;outline:none;color:var(--ink);background:transparent}
+    .search-inner input::placeholder{color:var(--ink3)}
+    .search-inner button{padding:0 20px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;transition:background .2s}
+    .search-inner button:hover{background:var(--navy2)}
+
+    .search-result-info{font-family:var(--sans);font-size:11px;color:var(--ink3);text-align:center;margin-bottom:20px}
+    .search-result-info span{color:var(--blue);font-weight:600}
+    .clear-search{color:var(--blue);cursor:pointer;text-decoration:underline;margin-left:8px}
+
+    .breaking{background:var(--navy);color:#fff;padding:9px 32px;display:flex;align-items:center;gap:16px;font-family:var(--sans);font-size:11px;letter-spacing:.05em}
+    .breaking-tag{background:var(--blue);color:#fff;padding:3px 12px;font-weight:700;letter-spacing:.15em;font-size:9px;text-transform:uppercase;flex-shrink:0}
+
+    main{max-width:1200px;margin:0 auto;padding:40px 32px}
+    .loading{text-align:center;padding:80px;font-family:var(--sans);font-size:12px;color:var(--ink3);letter-spacing:.1em}
+
+    .hero-magazine{display:grid;grid-template-columns:1fr 1px 360px;gap:0;margin-bottom:48px;border-bottom:2px solid var(--bg3);padding-bottom:48px}
+    .hero-divider{background:var(--bg3);margin:0 32px}
+    .hero-main{padding-right:32px;cursor:pointer}
+    .hero-label{font-family:var(--sans);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+    .hero-label::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue)}
+    .hero-img{width:100%;height:340px;object-fit:cover;margin-bottom:20px}
+    .hero-main h1{font-family:var(--serif);font-size:clamp(26px,3vw,44px);font-weight:400;line-height:1.15;color:var(--ink);margin-bottom:14px}
+    .hero-excerpt{font-size:17px;color:var(--ink2);line-height:1.7;font-weight:300;margin-bottom:14px}
+    .hero-meta{font-family:var(--sans);font-size:10px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase}
+
+    .sidebar-stories{display:flex;flex-direction:column}
+    .sidebar-story{padding:18px 0;border-bottom:1px solid var(--bg3);cursor:pointer;transition:background .15s}
+    .sidebar-story:first-child{padding-top:0}
+    .sidebar-story:last-child{border-bottom:none;padding-bottom:0}
+    .ss-label{font-family:var(--sans);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:7px}
+    .sidebar-story img{width:100%;height:100px;object-fit:cover;margin-bottom:10px}
+    .sidebar-story h3{font-family:var(--serif);font-size:18px;font-weight:400;line-height:1.25;color:var(--ink);margin-bottom:5px}
+    .sidebar-story p{font-size:13px;color:var(--ink3);line-height:1.5;font-weight:300}
+    .ss-meta{font-family:var(--sans);font-size:9px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-top:6px}
+
+    .weather-bar{background:var(--navy);padding:14px 32px;display:flex;gap:32px;align-items:center;overflow-x:auto;margin-bottom:40px;scrollbar-width:none}
+    .weather-bar::-webkit-scrollbar{display:none}
+    .w-label{font-family:var(--sans);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue3);white-space:nowrap;border-right:1px solid rgba(255,255,255,.1);padding-right:24px}
+    .w-city{text-align:center;white-space:nowrap}
+    .w-name{font-family:var(--sans);font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+    .w-temp{font-family:var(--serif);font-size:26px;font-weight:300;color:#fff}
+    .w-cond{font-family:var(--sans);font-size:9px;color:rgba(255,255,255,.5)}
+
+    .section-head{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+    .section-head h2{font-family:var(--serif);font-size:28px;font-weight:400;font-style:italic;white-space:nowrap;color:var(--ink)}
+    .section-line-left{width:32px;height:2px;background:var(--blue);flex-shrink:0}
+    .section-line-right{flex:1;height:1px;background:var(--bg3)}
+
+    .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:32px}
+    .news-card{cursor:pointer;transition:transform .2s;padding-bottom:20px;border-bottom:2px solid transparent}
+    .news-card:hover{border-bottom-color:var(--blue);transform:translateY(-2px)}
+    .news-card img{width:100%;height:180px;object-fit:cover;margin-bottom:14px}
+    .nc-label{font-family:var(--sans);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+    .news-card h3{font-family:var(--serif);font-size:20px;font-weight:400;line-height:1.25;color:var(--ink);margin-bottom:8px}
+    .news-card p{font-size:14px;color:var(--ink3);line-height:1.6;font-weight:300}
+    .nc-meta{font-family:var(--sans);font-size:9px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-top:10px}
+    .nc-badge{display:inline-block;font-family:var(--sans);font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:var(--bg2);color:var(--ink);padding:2px 8px;margin-top:8px;border:1px solid var(--bg3)}
+    .nc-okunma{font-family:var(--sans);font-size:9px;color:var(--ink3);margin-top:4px}
+    .empty{grid-column:1/-1;text-align:center;padding:60px 20px;font-family:var(--serif);font-size:24px;font-style:italic;color:var(--ink3)}
+
+    .load-more-wrap{text-align:center;margin-bottom:48px}
+    .load-more-btn{font-family:var(--sans);font-size:10px;letter-spacing:.25em;text-transform:uppercase;background:transparent;color:var(--ink);border:1px solid var(--ink3);padding:12px 40px;cursor:pointer;transition:all .2s}
+    .load-more-btn:hover{background:var(--navy);color:#fff}
+
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;overflow-y:auto;padding:40px 16px;backdrop-filter:blur(6px)}
+    .modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+    .modal{background:var(--bg);max-width:720px;width:100%;padding:40px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.3)}
+    .modal-close{position:absolute;top:16px;right:16px;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.15em;cursor:pointer;background:var(--navy);color:#fff;border:none;padding:7px 14px;text-transform:uppercase;transition:background .2s}
+    .modal-close:hover{background:var(--blue)}
+    .modal-cat{font-family:var(--sans);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .modal-cat::before{content:'';display:inline-block;width:20px;height:2px;background:var(--blue)}
+    .modal h1{font-family:var(--serif);font-size:clamp(22px,4vw,36px);font-weight:400;line-height:1.2;margin-bottom:12px;color:var(--ink)}
+    .modal-meta{font-family:var(--sans);font-size:10px;color:var(--ink3);margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bg3);letter-spacing:.08em;text-transform:uppercase}
+    .modal img{width:100%;height:280px;object-fit:cover;margin-bottom:24px}
+    .modal-body{font-size:17px;line-height:1.8;font-weight:300;color:var(--ink2)}
+    .modal-source{margin-top:24px;padding-top:16px;border-top:1px solid var(--bg3);font-family:var(--sans);font-size:10px;color:var(--ink3)}
+    .modal-source a{color:var(--blue)}
+    .share-btns{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--bg3)}
+    .share-btn{display:flex;align-items:center;gap:7px;padding:9px 20px;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:opacity .2s}
+    .share-btn:hover{opacity:.85}
+    .share-btn.wp{background:#25D366;color:#fff}
+    .<share-btn.tw>{background:#1d9bf0;color:#fff}
+
+    footer{background:var(--navy);color:#fff;padding:48px 32px 24px}
+    .footer-inner{max-width:1200px;margin:0 auto}
+    .footer-logo{font-family:var(--serif);font-size:42px;font-weight:300;letter-spacing:.05em;margin-bottom:4px}
+    .footer-logo span{color:var(--blue3);font-style:italic;font-weight:600}
+    .footer-tagline{font-family:var(--sans);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:32px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:20px}
+    .footer-desc{font-size:15px;color:rgba(255,255,255,.45);font-weight:300;line-height:1.7}
+    .f-col h4{font-family:var(--sans);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--blue3);margin-bottom:16px}
+    .f-col a{display:block;font-family:var(--sans);font-size:12px;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:10px;transition:color .2s}
+    .f-col a:hover{color:var(--blue3)}
+    .footer-bottom{font-family:var(--sans);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+    @media(max-width:900px){.hero-magazine{grid-template-columns:1fr}.hero-divider{display:none}.hero-main{padding-right:0;padding-bottom:32px;border-bottom:1px solid var(--bg3)}.card-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr;gap:24px}}
+    @media(max-width:560px){main{padding:24px 16px}.masthead,.search-wrap,.breaking,.weather-bar,.top-bar{padding-left:16px;padding-right:16px}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .fadeup{animation:fadeUp .35s ease both}
+  </style>
+</head>
+<body>
+
+<div class="notif-banner" id="notif-banner">
+  🔔 Son dakika haberleri için bildirim almak ister misiniz?
+  <button onclick="bildirimIzniAl()">Evet, İzin Ver</button>
+  <button class="kapat" onclick="document.getElementById('notif-banner').classList.remove('show')">✕</button>
+</div>
+
+<div class="top-bar">
+  <span class="top-bar-date" id="tarih">Yükleniyor...</span>
+  <div class="top-bar-social">
+    <a href="<https://twitter.com/anbeanews>" target="_blank" rel="noopener noreferrer" onclick="window.open('<https://twitter.com/anbeanews','_blank>');return false;">Twitter/X</a>
+    <a href="#"><anbeanews.com></a>
+    <button class="dark-toggle" id="dark-btn" onclick="darkToggle()">🌙</button>
+  </div>
+</div>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <a href="#" class="logo">AN<span>BEAN</span>EWS</a>
+    <div class="logo-sub">
+      <div class="logo-line"></div>
+      <div class="logo-tagline">Türkiye'nin Güncel Haber Kaynağı</div>
+      <div class="logo-line"></div>
+    </div>
+  </div>
+  <div class="nav-wrap">
+    <nav>
+      <a class="active" onclick="filterKategori('tumu',this)">Tümü</a>
+      <a onclick="filterKategori('Gündem',this)">Gündem</a>
+      <a onclick="filterKategori('Ekonomi',this)">Ekonomi</a>
+      <a onclick="filterKategori('Dünya',this)">Dünya</a>
+      <a onclick="filterKategori('Spor',this)">Spor</a>
+      <a onclick="filterKategori('Teknoloji',this)">Teknoloji</a>
+      <a onclick="filterKategori('Sağlık',this)">Sağlık</a>
+      <a onclick="filterKategori('Magazin',this)">Magazin</a>
+      <a onclick="filterKategori('Astroloji',this)">Astroloji</a>
+    </nav>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <form class="search-inner" onsubmit="aramaYap(event)">
+    <input type="text" id="arama-input" placeholder="Haber ara... (örn: ekonomi, Trump, deprem)" autocomplete="off"/>
+    <button type="submit">ARA</button>
+  </form>
+</div>
+
+<div class="breaking"><span class="breaking-tag">Son Dakika</span><span id="breaking-text">Haberler yükleniyor...</span></div>
+
+<main>
+  <div id="arama-bilgi" style="display:none" class="search-result-info"></div>
+  <div class="hero-magazine" id="hero-section"><div class="loading">Haberler yükleniyor...</div></div>
+
+  <div class="weather-bar" id="hava-durumu">
+    <span class="w-label">Hava Durumu</span>
+    <div class="w-city"><div class="w-name">İSTANBUL</div><div class="w-temp" id="w-ist">--°</div><div class="w-cond" id="wc-ist">Yükleniyor</div></div>
+    <div class="w-city"><div class="w-name">ANKARA</div><div class="w-temp" id="w-ank">--°</div><div class="w-cond" id="wc-ank">Yükleniyor</div></div>
+    <div class="w-city"><div class="w-name">İZMİR</div><div class="w-temp" id="w-izm">--°</div><div class="w-cond" id="wc-izm">Yükleniyor</div></div>
+    <div class="w-city"><div class="w-name">ANTALYA</div><div class="w-temp" id="w-ant">--°</div><div class="w-cond" id="wc-ant">Yükleniyor</div></div>
+    <div class="w-city"><div class="w-name">BURSA</div><div class="w-temp" id="w-bur">--°</div><div class="w-cond" id="wc-bur">Yükleniyor</div></div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-line-left"></div>
+    <h2 id="sec-title">Son Haberler</h2>
+    <div class="section-line-right"></div>
+  </div>
+
+  <div class="card-grid" id="haberler-grid"><div class="loading" style="grid-column:1/-1">Yükleniyor...</div></div>
+
+  <div class="load-more-wrap"><button id="daha-fazla-btn" onclick="dahaFazlaYukle()" style="display:none" class="load-more-btn">+ Daha Fazla Haber</button></div>
+</main>
+
+<div class="modal-overlay" id="modal" onclick="modalKapat(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕ Kapat</button>
+    <div class="modal-cat" id="m-cat"></div>
+    <h1 id="m-baslik"></h1>
+    <div class="modal-meta" id="m-meta"></div>
+    <img id="m-resim" src="" alt="" onerror="this.style.display='none'"/>
+    <div class="modal-body" id="m-icerik"></div>
+    <div class="modal-source" id="m-kaynak"></div>
+    <div class="share-btns">
+      <a id="wp-btn" class="share-btn wp" target="_blank">📱 WhatsApp</a>
+      <a id="tw-btn" class="share-btn tw" target="_blank">🐦 Twitter/X</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">AN<span>BEAN</span>EWS</div>
+    <div class="footer-tagline">Türkiye'nin Güvenilir Dijital Haber Platformu</div>
+    <div class="footer-grid">
+      <div><p class="footer-desc">Türkiye'nin ve dünyanın en güncel haberlerini 7/24 takip edin. Habertürk ve daha fazlasından otomatik güncellenen haber akışı.</p></div>
+      <div class="f-col">
+        <h4>Kategoriler</h4>
+        <a href="#" onclick="filterKategori('Gündem',null)">Gündem</a>
+        <a href="#" onclick="filterKategori('Ekonomi',null)">Ekonomi</a>
+        <a href="#" onclick="filterKategori('Dünya',null)">Dünya</a>
+        <a href="#" onclick="filterKategori('Spor',null)">Spor</a>
+        <a href="#" onclick="filterKategori('Magazin',null)">Magazin</a>
+        <a href="#" onclick="filterKategori('Astroloji',null)">Astroloji</a>
+      </div>
+      <div class="f-col">
+        <h4>Takip Edin</h4>
+        <a href="<https://twitter.com/anbeanews>" target="_blank" rel="noopener noreferrer" onclick="window.open('<https://twitter.com/anbeanews','_blank>');return false;">Twitter/X</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>2026 Anbeanews.</span><span>Tüm hakları saklıdır.</span></div>
+  </div>
+</footer>
+
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+
+  function bildirimIzniAl(){
+    if('Notification' in window){
+      Notification.requestPermission().then(function(perm){
+        if(perm==='granted'){
+          document.getElementById('notif-banner').classList.remove('show');
+          localStorage.setItem('notif','1');
+          new Notification('Anbeanews 🔔',{body:'Bildirimler açıldı! Son dakika haberlerini kaçırmayacaksınız.'});
+        }
+      });
+    }
+  }
+
+  window.addEventListener('load',function(){
+    if('Notification' in window && Notification.permission==='default' && localStorage.getItem('notif')!=='1'){
+      setTimeout(function(){
+        document.getElementById('notif-banner').classList.add('show');
+      },3000);
+    }
+  });
+
+  function darkToggle(){
+    const isDark=document.body.classList.toggle('dark');
+    document.getElementById('dark-btn').textContent=isDark?'☀️':'🌙';
+    localStorage.setItem('dark',isDark?'1':'0');
+  }
+  if(localStorage.getItem('dark')==='1'){
+    document.body.classList.add('dark');
+    document.addEventListener('DOMContentLoaded',function(){
+      const btn=document.getElementById('dark-btn');
+      if(btn)btn.textContent='☀️';
+    });
+  }
+
+  const gunler=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  const aylar=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const now=new Date();
+  document.getElementById('tarih').textContent=gunler[now.getDay()]+', '+now.getDate()+' '+aylar[now.getMonth()]+' '+now.getFullYear();
+
+  let tumHaberler=[];
+  let aktifKategori='tumu';
+  let aramaAktif=false;
+  let sayfaOffset=0;
+  const SAYFA_BOYUTU=6;
+
+  const SUPABASE_URL='<https://qmgfqkmsjotzxnekgbey.supabase.co>';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
+
+  function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az önce';if(fark<60)return fark+' dakika önce';if(fark<1440)return Math.floor(fark/60)+' saat önce';return Math.floor(fark/1440)+' gün önce';}
+
+  function okunmaFormat(sayi){
+    if(!sayi||sayi===0)return'';
+    if(sayi>=1000)return'👁 '+(sayi/1000).toFixed(1)+'B okuma';
+    return'👁 '+sayi+' okuma';
+  }
+
+  function resimUrl(h,seed){
+    var url=h.resim_url;
+    if(url&&typeof url==='string'&&url.startsWith('http')&&url.length>10)return url;
+    return'<https://picsum.photos/seed/'+seed+'/600/400>';
+  }
+
+  async function okunmaArttir(id){
+    await fetch(SUPABASE_URL+'/rest/v1/rpc/okunma_arttir',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({haber_id:id})
+    });
+  }
+
+  function heroRender(haberler){
+    const hero=haberler[0];const sidebar=haberler.slice(1,4);
+    if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henüz haber yok</div>';return;}
+    const sidebarHTML=sidebar.map(function(h){
+      return'<div class="sidebar-story fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'ss'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="ss-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="ss-meta">'+zamanFormat(h.created_at)+(h.okunma?' · '+okunmaFormat(h.okunma):'')+'</div></div>';
+    }).join('');
+    document.getElementById('hero-section').innerHTML=
+      '<div class="hero-main fadeup" onclick="haberAc('+<hero.id>+')">'+
+      '<div class="hero-label">'+(hero.kategori||'Gündem')+'</div>'+
+      '<img class="hero-img" src="'+resimUrl(hero,'hero'+<hero.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+
+      '<h1>'+hero.baslik+'</h1>'+
+      '<p class="hero-excerpt">'+(hero.ozet||'').substring(0,160)+'</p>'+
+      '<div class="hero-meta">'+zamanFormat(hero.created_at)+(hero.kaynak?' · '+hero.kaynak:'')+(hero.okunma?' · '+okunmaFormat(hero.okunma):'')+'</div>'+
+      '</div>'+
+      '<div class="hero-divider"></div>'+
+      '<div class="sidebar-stories">'+sidebarHTML+'</div>';
+  }
+
+  function kartlarRender(haberler){
+    const liste=haberler.slice(4);sayfaOffset=0;
+    if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty">Henüz haber yok</div>';document.getElementById('daha-fazla-btn').style.display='none';return;}
+    const goster=liste.slice(0,SAYFA_BOYUTU);
+    document.getElementById('haberler-grid').innerHTML=goster.map(function(h){
+      return'<div class="news-card fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'card'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+    }).join('');
+    sayfaOffset=SAYFA_BOYUTU;
+    document.getElementById('daha-fazla-btn').style.display=liste.length>SAYFA_BOYUTU?'inline-block':'none';
+  }
+
+  function dahaFazlaYukle(){
+    const liste=tumHaberler.slice(4);const yeni=liste.slice(sayfaOffset,sayfaOffset+SAYFA_BOYUTU);
+    if(yeni.length===0){document.getElementById('daha-fazla-btn').style.display='none';return;}
+    document.getElementById('haberler-grid').innerHTML+=yeni.map(function(h){
+      return'<div class="news-card fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'card'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+    }).join('');
+    sayfaOffset+=SAYFA_BOYUTU;
+    if(sayfaOffset>=liste.length)document.getElementById('daha-fazla-btn').style.display='none';
+  }
+
+  async function haberleriYukle(kategori){
+    kategori=kategori||'tumu';
+    try{
+      const yirmiDortSaatOnce=new Date(Date.now()-24*60*60*1000).toISOString();
+      let url=SUPABASE_URL+'/rest/v1/haberler?select=*&order=created_at.desc&limit=100&created_at=gte.'+yirmiDortSaatOnce;
+      if(kategori!=='tumu')url+='&kategori=eq.'+encodeURIComponent(kategori);
+      const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      tumHaberler=await res.json();
+      if(tumHaberler.length>0){document.getElementById('breaking-text').textContent=tumHaberler[0].baslik;}
+      else{document.getElementById('breaking-text').textContent='Yeni haberler için takipte kalın';}
+      heroRender(tumHaberler);
+      kartlarRender(tumHaberler);
+    }catch(err){
+      document.getElementById('hero-section').innerHTML='<div class="loading">Bağlantı hatası: '+err.message+'</div>';
+    }
+  }
+
+  async function aramaYap(e){
+    if(e)e.preventDefault();
+    const kelime=document.getElementById('arama-input').value.trim();
+    if(!kelime){aramaTemizle();return;}
+    aramaAktif=true;
+    document.getElementById('sec-title').textContent='Arama Sonuçları';
+    document.getElementById('arama-bilgi').style.display='block';
+    document.getElementById('arama-bilgi').innerHTML='<span>"'+kelime+'"</span> için aranıyor... <span class="clear-search" onclick="aramaTemizle()">Temizle</span>';
+    try{
+      const url=SUPABASE_URL+'/rest/v1/haberler?select=*&or=(baslik.ilike.*'+encodeURIComponent(kelime)+'*,ozet.ilike.*'+encodeURIComponent(kelime)+'*)&order=created_at.desc&limit=50';
+      const res=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const sonuclar=await res.json();
+      tumHaberler=sonuclar;
+      document.getElementById('arama-bilgi').innerHTML='<span>"'+kelime+'"</span> için <span>'+sonuclar.length+' haber</span> bulundu <span class="clear-search" onclick="aramaTemizle()">Temizle</span>';
+      if(sonuclar.length===0){
+        document.getElementById('hero-section').innerHTML='<div class="loading">Sonuç bulunamadı</div>';
+        document.getElementById('haberler-grid').innerHTML='<div class="empty">Haber bulunamadı</div>';
+      } else {heroRender(sonuclar);kartlarRender(sonuclar);}
+    }catch(err){document.getElementById('arama-bilgi').innerHTML='Hata: '+err.message;}
+  }
+
+  function aramaTemizle(){
+    aramaAktif=false;
+    document.getElementById('arama-input').value='';
+    document.getElementById('arama-bilgi').style.display='none';
+    document.getElementById('sec-title').textContent='Son Haberler';
+    haberleriYukle(aktifKategori);
+  }
+
+  function filterKategori(kat,el){
+    aktifKategori=kat;aramaTemizle();
+    document.querySelectorAll('nav a').forEach(function(a){a.classList.remove('active');});
+    if(el)el.classList.add('active');
+    document.getElementById('sec-title').textContent=kat==='tumu'?'Son Haberler':kat+' Haberleri';
+    haberleriYukle(kat);
+  }
+
+  function haberAc(id){
+    const h=tumHaberler.find(function(x){return <x.id>===id;});
+    if(!h)return;
+    okunmaArttir(id);
+    h.okunma=(h.okunma||0)+1;
+    document.getElementById('m-cat').textContent=h.kategori||'Genel';
+    document.getElementById('m-baslik').textContent=h.baslik;
+    document.getElementById('m-meta').textContent=zamanFormat(h.created_at)+(h.kaynak?' · '+h.kaynak:'')+(h.okunma?' · '+okunmaFormat(h.okunma):'');
+    const resim=document.getElementById('m-resim');
+    resim.src=resimUrl(h,'modal'+<h.id>);resim.style.display='block';
+    document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'İçerik bulunamadı.';
+    document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';
+    const haberLink=h.kaynak_url||window.location.href;
+    const haberBaslik=encodeURIComponent(h.baslik);
+    const haberUrl=encodeURIComponent(haberLink);
+    document.getElementById('wp-btn').href='<https://wa.me/?text='+haberBaslik+'%20'+haberUrl>;
+    document.getElementById('tw-btn').href='<https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeanews>';
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+
+  function modalKapat(e){
+    if(e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}
+  }
+
+  document.getElementById('arama-input').addEventListener('keydown',function(e){if(e.key==='Escape')aramaTemizle();});
+  haberleriYukle();
+  setInterval(function(){if(!aramaAktif)haberleriYukle(aktifKategori);},300000);
+
+  const WEATHER_KEY='dccc682baa68c1d2769dc3653c69ea1e';
+  const sehirler=[{id:'w-ist',cid:'wc-ist',sehir:'Istanbul,TR'},{id:'w-ank',cid:'wc-ank',sehir:'Ankara,TR'},{id:'w-izm',cid:'wc-izm',sehir:'Izmir,TR'},{id:'w-ant',cid:'wc-ant',sehir:'Antalya,TR'},{id:'w-bur',cid:'wc-bur',sehir:'Bursa,TR'}];
+  const havaDurumu={'Clear':'Güneşli','Clouds':'Bulutlu','Rain':'Yağmurlu','Drizzle':'Çiseleyen','Thunderstorm':'Fırtınalı','Snow':'Karlı','Mist':'Sisli','Fog':'Sisli','Haze':'Puslu'};
+  async function havaCek(){
+    for(const s of sehirler){
+      try{
+        const r=await fetch('<https://api.openweathermap.org/data/2.5/weather?q='+s.sehir+'&appid='+WEATHER_KEY+'&units=metric&lang=tr>');
+        if(!r.ok)continue;
+        const d=await r.json();
+        document.getElementById(<s.id>).textContent=Math.round(d.main.temp)+'°';
+        document.getElementById(s.cid).textContent=havaDurumu[d.weather[0].main]||d.weather[0].description;
+      }catch(e){}
+    }
+  }
+  havaCek();
+  setInterval(havaCek,1800000);
+</script>
+</body>
+</html>
