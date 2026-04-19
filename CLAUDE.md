@@ -30,7 +30,7 @@ Türkçe haber aggregation sitesi. RSS kaynaklarından otomatik haber çekip Sup
 ## Admin Paneli
 - **URL:** https://elitmedyaa.com/admin.html
 - **Kullanıcı adı:** admin
-- **Şifre:** anbeanews2026
+- **Şifre:** elitmedyaa2026
 - Ana sitede footer sağ alt köşedeki ⚙ ikonu ile de girilir (çok soluk, gizli)
 - Şifreyi değiştirmek için: `admin.html` ve `index.html` içindeki `ADMIN_PASS` değişkenlerini güncelle
 
