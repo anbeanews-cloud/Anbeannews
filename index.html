@@ -11,18 +11,18 @@
   <meta name="apple-mobile-web-app-title" content="Anbeanews"/>
   <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
   <link rel="apple-touch-icon" href="/icon.svg"/>
-  <link rel="canonical" href="<https://anbeanews.vercel.app>"/>
+  <link rel="canonical" href="https://anbeanews.vercel.app"/>
   <meta name="description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor, teknoloji ve sağlık haberleri."/>
   <meta name="keywords" content="haber, gündem, ekonomi, spor, teknoloji, dünya, Türkiye, son dakika"/>
   <meta property="og:title" content="Anbeanews - Güncel Türkçe Haberler"/>
   <meta property="og:description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor, teknoloji haberleri."/>
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="<https://anbeanews.vercel.app>"/>
-  <meta property="og:image" content="<https://anbeanews.vercel.app/icon.svg>"/>
+  <meta property="og:url" content="https://anbeanews.vercel.app"/>
+  <meta property="og:image" content="https://anbeanews.vercel.app/icon.svg"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Anbeanews - Güncel Türkçe Haberler"/>
   <meta name="twitter:description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor haberleri."/>
-  <meta name="twitter:image" content="<https://anbeanews.vercel.app/icon.svg>"/>
+  <meta name="twitter:image" content="https://anbeanews.vercel.app/icon.svg"/>
   <link href="<https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap>" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -187,7 +187,7 @@
 <div class="top-bar">
   <span class="top-bar-date" id="tarih">Yükleniyor...</span>
   <div class="top-bar-social">
-    <a href="<https://twitter.com/anbeanews>" target="_blank" rel="noopener noreferrer" onclick="window.open('<https://twitter.com/anbeanews','_blank>');return false;">Twitter/X</a>
+    <a href="https://twitter.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeanews','_blank');return false;">Twitter/X</a>
     <a href="#"><anbeanews.com></a>
     <button class="dark-toggle" id="dark-btn" onclick="darkToggle()">🌙</button>
   </div>
@@ -283,7 +283,7 @@
       </div>
       <div class="f-col">
         <h4>Takip Edin</h4>
-        <a href="<https://twitter.com/anbeanews>" target="_blank" rel="noopener noreferrer" onclick="window.open('<https://twitter.com/anbeanews','_blank>');return false;">Twitter/X</a>
+        <a href="https://twitter.com/anbeanews" target="_blank" rel="noopener noreferrer" onclick="window.open('https://twitter.com/anbeanews','_blank');return false;">Twitter/X</a>
       </div>
     </div>
     <div class="footer-bottom"><span>2026 Anbeanews.</span><span>Tüm hakları saklıdır.</span></div>
@@ -341,7 +341,7 @@
   let sayfaOffset=0;
   const SAYFA_BOYUTU=6;
 
-  const SUPABASE_URL='<https://qmgfqkmsjotzxnekgbey.supabase.co>';
+  const SUPABASE_URL='https://qmgfqkmsjotzxnekgbey.supabase.co';
   const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtZ2Zxa21zam90enhuZWtnYmV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNjU5MzYsImV4cCI6MjA5MTc0MTkzNn0.Jjch1oLyhLVLCSRSNV6azA4zNF2-85e265pvPkLpcVw';
 
   function zamanFormat(tarih){if(!tarih)return'';const d=new Date(tarih);const fark=Math.floor((Date.now()-d)/60000);if(fark<1)return'Az önce';if(fark<60)return fark+' dakika önce';if(fark<1440)return Math.floor(fark/60)+' saat önce';return Math.floor(fark/1440)+' gün önce';}
@@ -370,12 +370,12 @@
     const hero=haberler[0];const sidebar=haberler.slice(1,4);
     if(!hero){document.getElementById('hero-section').innerHTML='<div class="loading">Henüz haber yok</div>';return;}
     const sidebarHTML=sidebar.map(function(h){
-      return'<div class="sidebar-story fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'ss'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="ss-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="ss-meta">'+zamanFormat(h.created_at)+(h.okunma?' · '+okunmaFormat(h.okunma):'')+'</div></div>';
+      return'<div class="sidebar-story fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'ss'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="ss-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,80)+'</p><div class="ss-meta">'+zamanFormat(h.created_at)+(h.okunma?' · '+okunmaFormat(h.okunma):'')+'</div></div>';
     }).join('');
     document.getElementById('hero-section').innerHTML=
-      '<div class="hero-main fadeup" onclick="haberAc('+<hero.id>+')">'+
+      '<div class="hero-main fadeup" onclick="haberAc('+hero.id+')">'+
       '<div class="hero-label">'+(hero.kategori||'Gündem')+'</div>'+
-      '<img class="hero-img" src="'+resimUrl(hero,'hero'+<hero.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+
+      '<img class="hero-img" src="'+resimUrl(hero,'hero'+hero.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+
       '<h1>'+hero.baslik+'</h1>'+
       '<p class="hero-excerpt">'+(hero.ozet||'').substring(0,160)+'</p>'+
       '<div class="hero-meta">'+zamanFormat(hero.created_at)+(hero.kaynak?' · '+hero.kaynak:'')+(hero.okunma?' · '+okunmaFormat(hero.okunma):'')+'</div>'+
@@ -389,7 +389,7 @@
     if(liste.length===0){document.getElementById('haberler-grid').innerHTML='<div class="empty">Henüz haber yok</div>';document.getElementById('daha-fazla-btn').style.display='none';return;}
     const goster=liste.slice(0,SAYFA_BOYUTU);
     document.getElementById('haberler-grid').innerHTML=goster.map(function(h){
-      return'<div class="news-card fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'card'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
     }).join('');
     sayfaOffset=SAYFA_BOYUTU;
     document.getElementById('daha-fazla-btn').style.display=liste.length>SAYFA_BOYUTU?'inline-block':'none';
@@ -399,7 +399,7 @@
     const liste=tumHaberler.slice(4);const yeni=liste.slice(sayfaOffset,sayfaOffset+SAYFA_BOYUTU);
     if(yeni.length===0){document.getElementById('daha-fazla-btn').style.display='none';return;}
     document.getElementById('haberler-grid').innerHTML+=yeni.map(function(h){
-      return'<div class="news-card fadeup" onclick="haberAc('+<h.id>+')">'+'<img src="'+resimUrl(h,'card'+<h.id>)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
+      return'<div class="news-card fadeup" onclick="haberAc('+h.id+')">'+'<img src="'+resimUrl(h,'card'+h.id)+'" alt="" onerror="this.style.display=\'none\'"/>'+'<div class="nc-label">'+(h.kategori||'Genel')+'</div><h3>'+h.baslik+'</h3><p>'+(h.ozet||'').substring(0,100)+'</p><div class="nc-meta">'+zamanFormat(h.created_at)+'</div>'+(h.okunma?'<div class="nc-okunma">'+okunmaFormat(h.okunma)+'</div>':'')+(h.kaynak?'<div class="nc-badge">'+h.kaynak+'</div>':'')+'</div>';
     }).join('');
     sayfaOffset+=SAYFA_BOYUTU;
     if(sayfaOffset>=liste.length)document.getElementById('daha-fazla-btn').style.display='none';
@@ -462,7 +462,7 @@
   }
 
   function haberAc(id){
-    const h=tumHaberler.find(function(x){return <x.id>===id;});
+    const h=tumHaberler.find(function(x){return x.id===id;});
     if(!h)return;
     okunmaArttir(id);
     h.okunma=(h.okunma||0)+1;
@@ -470,14 +470,14 @@
     document.getElementById('m-baslik').textContent=h.baslik;
     document.getElementById('m-meta').textContent=zamanFormat(h.created_at)+(h.kaynak?' · '+h.kaynak:'')+(h.okunma?' · '+okunmaFormat(h.okunma):'');
     const resim=document.getElementById('m-resim');
-    resim.src=resimUrl(h,'modal'+<h.id>);resim.style.display='block';
+    resim.src=resimUrl(h,'modal'+h.id);resim.style.display='block';
     document.getElementById('m-icerik').textContent=h.icerik||h.ozet||'İçerik bulunamadı.';
     document.getElementById('m-kaynak').innerHTML=h.kaynak_url?'Kaynak: <a href="'+h.kaynak_url+'" target="_blank">'+h.kaynak_url+'</a>':'';
     const haberLink=h.kaynak_url||window.location.href;
     const haberBaslik=encodeURIComponent(h.baslik);
     const haberUrl=encodeURIComponent(haberLink);
-    document.getElementById('wp-btn').href='<https://wa.me/?text='+haberBaslik+'%20'+haberUrl>;
-    document.getElementById('tw-btn').href='<https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeanews>';
+    document.getElementById('wp-btn').href='https://wa.me/?text='+haberBaslik+'%20'+haberUrl>;
+    document.getElementById('tw-btn').href='https://twitter.com/intent/tweet?text='+haberBaslik+'&url='+haberUrl+'&via=anbeanews';
     document.getElementById('modal').classList.add('open');
     document.body.style.overflow='hidden';
   }
@@ -496,10 +496,10 @@
   async function havaCek(){
     for(const s of sehirler){
       try{
-        const r=await fetch('<https://api.openweathermap.org/data/2.5/weather?q='+s.sehir+'&appid='+WEATHER_KEY+'&units=metric&lang=tr>');
+        const r=await fetch('https://api.openweathermap.org/data/2.5/weather?q='+s.sehir+'&appid='+WEATHER_KEY+'&units=metric&lang=tr');
         if(!r.ok)continue;
         const d=await r.json();
-        document.getElementById(<s.id>).textContent=Math.round(d.main.temp)+'°';
+        document.getElementById(s.id).textContent=Math.round(d.main.temp)+'°';
         document.getElementById(s.cid).textContent=havaDurumu[d.weather[0].main]||d.weather[0].description;
       }catch(e){}
     }
