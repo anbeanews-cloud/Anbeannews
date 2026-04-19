@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Static Site (index.html)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3000"],
+      "port": 3000
+    },
+    {
+      "name": "Scraper (scraper.py)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["scraper.py"],
+      "port": 0
+    }
+  ]
+}
