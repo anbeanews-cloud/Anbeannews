@@ -156,7 +156,7 @@
     .share-btn{display:flex;align-items:center;gap:7px;padding:9px 20px;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:opacity .2s}
     .share-btn:hover{opacity:.85}
     .share-btn.wp{background:#25D366;color:#fff}
-    .<share-btn.tw>{background:#1d9bf0;color:#fff}
+    .share-btn.tw{background:#1d9bf0;color:#fff}
 
     footer{background:var(--navy);color:#fff;padding:48px 32px 24px}
     .footer-inner{max-width:1200px;margin:0 auto}
@@ -355,7 +355,7 @@
   function resimUrl(h,seed){
     var url=h.resim_url;
     if(url&&typeof url==='string'&&url.startsWith('http')&&url.length>10)return url;
-    return'<https://picsum.photos/seed/'+seed+'/600/400>';
+    return'https://picsum.photos/seed/'+seed+'/600/400';
   }
 
   async function okunmaArttir(id){
