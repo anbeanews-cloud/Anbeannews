@@ -9,7 +9,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="Elitmedyaa"/>
-  <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="/favicon.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="/favicon.png"/>
   <link rel="apple-touch-icon" href="/icon.svg"/>
   <link rel="canonical" href="https://elitmedyaa.com"/>
   <meta name="description" content="Türkiye'nin güncel haber kaynağı. Gündem, ekonomi, dünya, spor, teknoloji ve sağlık haberleri."/>
@@ -197,7 +198,8 @@
 </div>
 
 <div class="masthead">
-  <div class="masthead-inner">
+  <div class="masthead-inner" style="position:relative">
+    <button onclick="adminModalAc()" style="position:absolute;top:0;right:0;background:none;border:1px solid var(--navy);color:var(--navy);font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:7px 16px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='var(--navy)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--navy)'">Giriş Yap</button>
     <a href="#" class="logo">ELİT<span>MEDYAA</span></a>
     <div class="logo-sub">
       <div class="logo-line"></div>
