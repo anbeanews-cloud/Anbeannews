@@ -30,7 +30,7 @@ import os
 
 SUPABASE_URL = os.environ.get(
     "SUPABASE_URL",
-    "<https://qmgfqkmsjotzxnekgbey.supabase.co>"
+    "https://qmgfqkmsjotzxnekgbey.supabase.co"
 ).strip()
 
 SUPABASE_KEY = os.environ.get(
@@ -41,25 +41,25 @@ SUPABASE_KEY = os.environ.get(
 MAX_YASH_SAAT = 24
 
 RSS_KAYNAKLARI = [
-    ("<https://www.trthaber.com/sondakika.rss>",           "Gündem",    "TRT Haber"),
-    ("<https://www.trthaber.com/gundem.rss>",              "Gündem",    "TRT Haber"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=guncel>",  "Gündem",    "AA"),
-    ("<https://t24.com.tr/rss>",                           "Gündem",    "T24"),
-    ("<https://feeds.bbci.co.uk/turkce/rss.xml>",         "Gündem",    "BBC Türkçe"),
-    ("<https://rss.dw.com/rdf/rss-tur-all>",              "Gündem",    "DW Türkçe"),
-    ("<https://tr.euronews.com/rss?format=mrss>",         "Gündem",    "Euronews TR"),
-    ("<https://tr.sputniknews.com/export/rss2/archive/index.xml>", "Gündem", "Sputnik TR"),
-    ("<https://www.trthaber.com/ekonomi.rss>",             "Ekonomi",   "TRT Haber"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=ekonomi>", "Ekonomi",   "AA"),
-    ("<https://www.trthaber.com/dunya.rss>",               "Dünya",     "TRT Haber"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=dunya>",   "Dünya",     "AA"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=spor>",    "Spor",      "AA"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=teknoloji>", "Teknoloji", "AA"),
-    ("<https://www.aa.com.tr/tr/rss/default?cat=saglik>",  "Sağlık",    "AA"),
-    ("<https://www.trthaber.com/kultur-sanat.rss>",        "Magazin",   "TRT Haber"),
-    ("<https://www.sozcu.com.tr/feeds-rss-category-astroloji>", "Astroloji", "Sözcü"),
-    ("<https://www.haberturk.com/rss/kategori/astroloji.xml>",  "Astroloji", "Haberturk"),
-    ("<https://indigodergisi.com/category/astroloji/feed/>",    "Astroloji", "Indigo Dergisi"),
+    ("https://www.trthaber.com/sondakika.rss",           "Gündem",    "TRT Haber"),
+    ("https://www.trthaber.com/gundem.rss",              "Gündem",    "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=guncel",  "Gündem",    "AA"),
+    ("https://t24.com.tr/rss",                           "Gündem",    "T24"),
+    ("https://feeds.bbci.co.uk/turkce/rss.xml",         "Gündem",    "BBC Türkçe"),
+    ("https://rss.dw.com/rdf/rss-tur-all",              "Gündem",    "DW Türkçe"),
+    ("https://tr.euronews.com/rss?format=mrss",         "Gündem",    "Euronews TR"),
+    ("https://tr.sputniknews.com/export/rss2/archive/index.xml", "Gündem", "Sputnik TR"),
+    ("https://www.trthaber.com/ekonomi.rss",             "Ekonomi",   "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=ekonomi", "Ekonomi",   "AA"),
+    ("https://www.trthaber.com/dunya.rss",               "Dünya",     "TRT Haber"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=dunya",   "Dünya",     "AA"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=spor",    "Spor",      "AA"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=teknoloji", "Teknoloji", "AA"),
+    ("https://www.aa.com.tr/tr/rss/default?cat=saglik",  "Sağlık",    "AA"),
+    ("https://www.trthaber.com/kultur-sanat.rss",        "Magazin",   "TRT Haber"),
+    ("https://www.sozcu.com.tr/feeds-rss-category-astroloji", "Astroloji", "Sözcü"),
+    ("https://www.haberturk.com/rss/kategori/astroloji.xml",  "Astroloji", "Haberturk"),
+    ("https://indigodergisi.com/category/astroloji/feed/",    "Astroloji", "Indigo Dergisi"),
 ]
 
 KATEGORI_ANAHTAR = {
@@ -189,8 +189,8 @@ def og_image_cek(url: str) -> str:
     return ""
 
 
-_MEDIA_NS = "<http://search.yahoo.com/mrss/>"
-_ATOM_NS  = "<http://www.w3.org/2005/Atom>"
+_MEDIA_NS = "http://search.yahoo.com/mrss/"
+_ATOM_NS  = "http://www.w3.org/2005/Atom"
 
 ET.register_namespace("media", _MEDIA_NS)
 ET.register_namespace("atom",  _ATOM_NS)

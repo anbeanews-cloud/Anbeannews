@@ -3,7 +3,7 @@ name: Anbeanews Haber Çekici
 on:
   # Her 15 dakikada bir otomatik çalışır
   schedule:
-    - cron: "0 * * * *"
+    - cron: "*/30 * * * *"
 
   # Manuel tetikleme (test için)
   workflow_dispatch:
