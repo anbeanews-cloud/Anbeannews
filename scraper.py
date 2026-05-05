@@ -128,32 +128,28 @@ def _next_ua() -> str:
     return ua
 
 
-def http_get(url: str, timeout: int = 5) -> bytes | None:
-    for attempt in range(2):
-        try:
-            req = urllib.request.Request(
-                url,
-                headers={
-                    "User-Agent": _next_ua(),
-                    "Accept": "application/rss+xml,application/xml,text/xml,text/html,*/*",
-                    "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
-                    "Cache-Control": "no-cache",
-                },
-            )
-            with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
-                return resp.read()
-        except Exception as e:
-            if attempt == 0:
-                time.sleep(1)
-            else:
-                print(f"    [!] {url[:55]}... → {e}")
+def http_get(url: str, timeout: int = 5, max_bytes: int = None) -> bytes | None:
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": _next_ua(),
+                "Accept": "application/rss+xml,application/xml,text/xml,text/html,*/*",
+                "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
+                "Cache-Control": "no-cache",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=timeout, context=_SSL_CTX) as resp:
+            return resp.read(max_bytes) if max_bytes else resp.read()
+    except Exception as e:
+        print(f"    [!] {url[:55]}... → {e}")
     return None
 
 
 def og_image_cek(url: str) -> str:
     if not BS4_OK:
         return ""
-    data = http_get(url, timeout=5)
+    data = http_get(url, timeout=4, max_bytes=65536)
     if not data:
         return ""
     try:
