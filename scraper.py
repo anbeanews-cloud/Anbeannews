@@ -467,9 +467,6 @@ def main():
     print(f"  ⏱ Süre       : {sure}s")
     print("=" * 64)
 
-    if eklenen == 0 and atlanan_hata > len(RSS_KAYNAKLARI) // 2:
-        sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
