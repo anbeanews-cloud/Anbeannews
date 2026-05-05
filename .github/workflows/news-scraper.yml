@@ -3,10 +3,6 @@ name: Anbeanews Haber Çekici
 on:
   workflow_dispatch:
 
-concurrency:
-  group: scraper
-  cancel-in-progress: true
-
 jobs:
   haber-cek:
     name: Haberleri Çek ve Supabase'e Yükle
@@ -14,22 +10,18 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      # ── 1. Kodu indir ────────────────────────────────────────────────
       - name: Kodu Al
         uses: actions/checkout@v4
 
-      # ── 2. Python kur ────────────────────────────────────────────────
       - name: Python 3.11 Kur
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
-      # ── 3. Bağımlılıkları yükle ──────────────────────────────────────
       - name: Bağımlılıkları Yükle
         run: pip install -r requirements.txt
 
-      # ── 4. Scraper'ı çalıştır ────────────────────────────────────────
       - name: Haberleri Çek
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
