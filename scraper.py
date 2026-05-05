@@ -128,7 +128,7 @@ def _next_ua() -> str:
     return ua
 
 
-def http_get(url: str, timeout: int = 10) -> bytes | None:
+def http_get(url: str, timeout: int = 5) -> bytes | None:
     for attempt in range(2):
         try:
             req = urllib.request.Request(
@@ -153,7 +153,7 @@ def http_get(url: str, timeout: int = 10) -> bytes | None:
 def og_image_cek(url: str) -> str:
     if not BS4_OK:
         return ""
-    data = http_get(url, timeout=8)
+    data = http_get(url, timeout=5)
     if not data:
         return ""
     try:
@@ -212,7 +212,7 @@ def html_temizle(metin: str) -> str:
 
 
 def rss_oku(url: str) -> list[dict]:
-    data = http_get(url, timeout=12)
+    data = http_get(url, timeout=8)
     if not data:
         return []
     try:

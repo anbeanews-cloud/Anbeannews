@@ -12,7 +12,7 @@ jobs:
   haber-cek:
     name: Haberleri Çek ve Supabase'e Yükle
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       # ── 1. Kodu indir ────────────────────────────────────────────────
