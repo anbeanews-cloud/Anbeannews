@@ -153,36 +153,28 @@ def http_get(url: str, timeout: int = 5) -> bytes | None:
 def og_image_cek(url: str) -> str:
     if not BS4_OK:
         return ""
-    data = http_get(url, timeout=5)
-    if not data:
+    try:
+        req = urllib.request.Request(url, headers={
+            "User-Agent": _next_ua(),
+            "Accept": "text/html,*/*",
+            "Accept-Language": "tr-TR,tr;q=0.9",
+        })
+        with urllib.request.urlopen(req, timeout=3, context=_SSL_CTX) as resp:
+            data = resp.read(65536)
+    except Exception:
         return ""
     try:
         soup = BeautifulSoup(data, "lxml")
-        tag = soup.find("meta", property="og:image") or soup.find("meta", attrs={"name": "og:image"})
-        if tag:
-            src = tag.get("content", "")
-            if src.startswith("http"):
-                return src
-        tag = soup.find("meta", attrs={"name": "twitter:image"}) or \
-              soup.find("meta", attrs={"name": "twitter:image:src"})
-        if tag:
-            src = tag.get("content", "")
-            if src.startswith("http"):
-                return src
+        for prop in ("og:image", "twitter:image", "twitter:image:src"):
+            tag = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
+            if tag:
+                src = tag.get("content", "")
+                if src.startswith("http"):
+                    return src
         tag = soup.find("link", rel="image_src")
         if tag:
             src = tag.get("href", "")
             if src.startswith("http"):
-                return src
-        for img in soup.find_all("img", src=True):
-            src = img.get("src", "")
-            if src.startswith("http") and re.search(r"\.(jpe?g|png|webp)(\?|$)", src, re.I):
-                w = img.get("width", "")
-                h = img.get("height", "")
-                if w and int(re.sub(r"\D", "", w) or 0) < 100:
-                    continue
-                if h and int(re.sub(r"\D", "", h) or 0) < 100:
-                    continue
                 return src
     except Exception:
         pass
@@ -389,6 +381,7 @@ def mevcut_url_seti() -> set[str]:
 
 def main():
     baslangic = time.time()
+    OG_IMAGE_SURE_SINIRI = 840  # 14 dakika sonra og:image atla
     print("=" * 64)
     print(f"  Anbeanews Scraper  |  {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
     print("=" * 64)
@@ -433,7 +426,7 @@ def main():
                 continue
 
             resim_url = madde["resim_rss"] if madde["resim_rss"] and madde["resim_rss"].startswith("http") else ""
-            if not resim_url:
+            if not resim_url and (time.time() - baslangic) < OG_IMAGE_SURE_SINIRI:
                 resim_url = og_image_cek(link)
                 time.sleep(0.15)
 
