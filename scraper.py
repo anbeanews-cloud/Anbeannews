@@ -433,6 +433,9 @@ def main():
                 continue
 
             resim_url = madde["resim_rss"] if madde["resim_rss"] and madde["resim_rss"].startswith("http") else ""
+            if not resim_url:
+                resim_url = og_image_cek(link)
+                time.sleep(0.15)
 
             kategori = kategori_tahmin(madde["baslik"], varsayilan_kat)
 
